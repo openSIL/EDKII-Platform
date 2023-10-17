@@ -1,0 +1,13 @@
+#;*****************************************************************************
+#; Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+#;
+#;*****************************************************************************
+#
+## @file
+# CRB specific - External AGCL PEI build.
+#
+##
+  #
+  # AMD AGCL PEI Includes - External
+  #
+  !include AgesaModulePkg/AgesaSp5GenoaModulePkg.pei.inc.fdf

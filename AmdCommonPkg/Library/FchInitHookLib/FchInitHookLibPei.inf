@@ -1,0 +1,46 @@
+#;*****************************************************************************
+#;
+#; Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
+#;
+#;******************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = FchInitHookLib
+  FILE_GUID                      = c7da2770-e0a1-4522-8dd4-7f5c9e6ca4dd
+  MODULE_TYPE                    = PEIM
+  LIBRARY_CLASS                  = FchInitHookLibPei
+
+[Sources.Ia32]
+  FchInitHookLibPei.c
+  # AMD EDKII OVERRIDE START
+  PlatformFchInit.c
+  # AMD EDKII OVERRIDE END
+
+[Sources.X64]
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AgesaModulePkg/AgesaModuleFchPkg.dec
+  # AMD EDKII OVERRIDE START
+  AmdCommonPkg/AmdCommonPkg.dec
+  # AMD EDKII OVERRIDE END
+
+[LibraryClasses]
+  PcdLib
+  DebugLib
+
+[Protocols]
+
+[Guids]
+
+[Pcd]
+  # AMD EDKII OVERRIDE START
+  gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdLpcEnable
+  gAmdCommonPkgTokenSpaceGuid.PcdIpmiKCSPort
+  gAmdCommonPkgTokenSpaceGuid.PcdIpmiInterfaceType
+  # AMD EDKII OVERRIDE END
+
+[Depex]
+

@@ -1,0 +1,10 @@
+[
+  "Platform",
+  "AGESA",
+  "edk2",
+  "edk2-platforms",
+  "edk2-platforms/Platform/Intel",
+  "edk2-platforms/Features/Intel",
+  "edk2-platforms/Features/Intel/SystemInformation",
+  "edk2-platforms/Silicon/Intel"
+]

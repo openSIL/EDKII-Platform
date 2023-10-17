@@ -1,0 +1,12 @@
+//*****************************************************************************
+//*
+//* Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+//*
+//*
+//***************************************************************************/
+//
+
+#string STR_MODULE_ABSTRACT             #language en-US "Library instance to provide AMD required Depex for CpuDxe Driver."
+
+#string STR_MODULE_DESCRIPTION          #language en-US "Library instance to provide AMD required Depex for CpuDxe Driver."
+

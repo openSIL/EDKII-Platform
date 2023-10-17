@@ -1,0 +1,39 @@
+#;*****************************************************************************
+#; Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
+#;
+#;******************************************************************************
+#
+
+[Defines]
+  INF_VERSION                    = 1.29
+  BASE_NAME                      = PciHotPlugInit
+  FILE_GUID                      = ADB0EEA2-8945-4ADF-94A0-3B0B935B4268
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 0.1
+  ENTRY_POINT                    = PciHotPlugInitialize
+
+[Sources]
+  PciHotPlugInit.c
+
+[Packages]
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+  AmdCommonPkg/AmdCommonPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  DebugLib
+  MemoryAllocationLib
+
+[Protocols]
+  gEfiPciHotPlugInitProtocolGuid
+
+[Pcd]
+  gAmdCommonPkgTokenSpaceGuid.PcdPciHotPlugResourcePadIO
+  gAmdCommonPkgTokenSpaceGuid.PcdPciHotPlugResourcePadPMem
+  gAmdCommonPkgTokenSpaceGuid.PcdPciHotPlugResourcePadMem
+  gAmdCommonPkgTokenSpaceGuid.PcdPciHotPlugResourcePadBus
+
+[Depex]
+  TRUE

@@ -1,0 +1,40 @@
+#/*****************************************************************************
+# *
+# * Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+# *
+# *****************************************************************************/
+#
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = TestSsdt
+  FILE_GUID                      = 5DA8F990-C54A-475E-94DC-AFCB5D32F2E1
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InstallTestSsdt
+
+[Sources.common]
+  TestSsdt.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmdCommonPkg/AmdCommonPkg.dec
+  AgesaPkg/AgesaPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  BaseLib
+  DebugLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  AmlLib
+
+[Protocols]
+  gEfiAcpiTableProtocolGuid
+
+[Pcd]
+
+[Depex]
+  gEfiAcpiTableProtocolGuid
+
+[BuildOptions]
+#   MSFT:*_*_*_CC_FLAGS = /FAcs

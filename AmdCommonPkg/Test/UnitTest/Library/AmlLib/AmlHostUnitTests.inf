@@ -1,0 +1,51 @@
+#/*****************************************************************************
+# *
+# * Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+# *
+# *****************************************************************************/
+#
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmlLibUnitHostTest
+  FILE_GUID                      = 8eb0cb92-93b6-402b-b2b9-5e6f44ec019c
+  MODULE_TYPE                    = HOST_APPLICATION
+  VERSION_STRING                 = 1.0
+
+[Sources]
+# INSERT HERE
+  AliasTest.c
+  EisaIdTest.c
+  QWordMemoryTest.c
+  DWordMemoryTest.c
+  DmaTest.c
+  PackageTest.c
+  AmlDefReturn.c
+  AmlDefNameString.c
+  AmlTestMain.c
+  AmlDefExternal.c
+  AmlDefMethod.c
+  AmlDefDataInteger.c
+  AmlDefDataString.c
+  AmlTests.h
+  AmlTestConstants.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmdCommonPkg/AmdCommonPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  UnitTestLib
+  AmlLib
+
+[Protocols]
+
+[Pcd]
+
+[BuildOptions]
+  MSFT:*_*_*_CC_FLAGS = -D _CRT_SECURE_NO_WARNINGS
+
+

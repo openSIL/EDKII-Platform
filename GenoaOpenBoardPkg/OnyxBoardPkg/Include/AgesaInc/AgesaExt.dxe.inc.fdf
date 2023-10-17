@@ -1,0 +1,13 @@
+#;*****************************************************************************
+#; Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+#;
+#;*****************************************************************************
+#
+## @file
+# CRB specific - External AGCL DXE build.
+#
+##
+  #
+  # AMD AGCL DXE Includes - External
+  #
+  !include AgesaModulePkg/AgesaSp5GenoaModulePkg.dxe.inc.fdf

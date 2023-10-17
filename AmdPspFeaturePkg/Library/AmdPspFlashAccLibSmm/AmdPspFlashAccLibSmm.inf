@@ -1,0 +1,50 @@
+#;*****************************************************************************
+#;
+#; Copyright (C) 2008-2023 Advanced Micro Devices, Inc. All rights reserved.
+#;
+#;******************************************************************************
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = AmdPspFlashAccLibSmm
+  FILE_GUID                      = CE8B879A-D1DE-493B-BEF2-758C5B27091A
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = AmdPspFlashAccLib | DXE_SMM_DRIVER 
+  CONSTRUCTOR                    = AmdPspFlashAccLibSmmConstructor
+
+[Sources.common]
+  AmdPspFlashAccLibSmm.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AgesaModulePkg/AgesaCommonModulePkg.dec
+  AgesaModulePkg/AgesaModulePspPkg.dec
+  AmdCommonPkg/AmdCommonPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  AgesaPkg/AgesaPkg.dec
+  MinPlatformPkg/MinPlatformPkg.dec
+
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  SmmServicesTableLib
+  DebugLib
+  AmdPspBaseLibV2
+  BaseLib
+
+[Guids]
+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiSpiSmmNorFlashProtocolGuid
+
+[Pcd]
+  gAmdCommonPkgTokenSpaceGuid.PcdFlashNvStorageBlockSize               ## CONSUMES
+  gMinPlatformPkgTokenSpaceGuid.PcdFlashAreaBaseAddress                ## CONSUMES
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid
+  AND gEfiSpiSmmNorFlashProtocolGuid
+
+
+
