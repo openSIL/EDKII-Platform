@@ -31,7 +31,7 @@
   TimerLib
   DebugLib
   AmdPspRomArmorLib
-  PlatformPspRomArmorWhitelistLib
+  PlatformPspRomArmorAllowlistLib
   BaseMemoryLib
 
 [Sources]

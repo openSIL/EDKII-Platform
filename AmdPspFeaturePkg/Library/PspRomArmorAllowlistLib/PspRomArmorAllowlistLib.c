@@ -7,18 +7,18 @@
 /**
  * @file
  *
- * Platform ROM Armor Whitelist table
+ * Platform ROM Armor Allowlist table
  *
  */
 
 #include <Library/DebugLib.h>
 #include <Library/AmdPspRomArmorLib.h>
-#include <Library/PlatformPspRomArmorWhitelistLib.h>
+#include <Library/PlatformPspRomArmorAllowlistLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/PcdLib.h>
 
-SPI_WHITE_LIST gRomArmorWhitelist = {
+SPI_ALLOW_LIST gRomArmorAllowlist = {
   9,    // AllowedCmdCount
   1,    // AllowedRegionCount
   {
@@ -78,28 +78,28 @@ SPI_WHITE_LIST gRomArmorWhitelist = {
 
 /*----------------------------------------------------------------------------------------*/
 /*
- *  Return allocated and filled AMD PSP ROM Armor White list Table
+ *  Return allocated and filled AMD PSP ROM Armor Allow list Table
  *
  *
- * @param[in]  PlatformSpiWhitelist   Pointer to white list table
+ * @param[in]  PlatformSpiAllowlist   Pointer to allow list table
  *
  * @return    EFI_SUCCESS
  * @return    EFI_OUT_OF_RESOURCES      Buffer to return couldn't be allocated
  */
 EFI_STATUS
 EFIAPI
-GetPspRomArmorWhitelist (
-  IN       SPI_WHITE_LIST     **PlatformSpiWhitelist
+GetPspRomArmorAllowlist (
+  IN       SPI_ALLOW_LIST     **PlatformSpiAllowlist
   )
 {
-  SPI_WHITE_LIST    *SpiWhitelist;
+  SPI_ALLOW_LIST    *SpiAllowlist;
 
-  SpiWhitelist = AllocateZeroPool (sizeof (SPI_WHITE_LIST));
-  *PlatformSpiWhitelist = SpiWhitelist;
-  if (SpiWhitelist == NULL) {
+  SpiAllowlist = AllocateZeroPool (sizeof (SPI_ALLOW_LIST));
+  *PlatformSpiAllowlist = SpiAllowlist;
+  if (SpiAllowlist == NULL) {
     return EFI_OUT_OF_RESOURCES;
   }
-  CopyMem (SpiWhitelist, &gRomArmorWhitelist, sizeof (SPI_WHITE_LIST));
+  CopyMem (SpiAllowlist, &gRomArmorAllowlist, sizeof (SPI_ALLOW_LIST));
 
   return EFI_SUCCESS;
 }

@@ -5,14 +5,14 @@
 #;******************************************************************************
 [Defines]
   INF_VERSION                    = 0x00010006
-  BASE_NAME                      = GenoaPspRomArmorWhitelistLib
+  BASE_NAME                      = GenoaPspRomArmorAllowlistLib
   FILE_GUID                      = 308DAB0B-7FD1-4DAA-AB0E-D6A251DDC13F
   MODULE_TYPE                    = DXE_SMM_DRIVER
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = PlatformPspRomArmorWhitelistLib
+  LIBRARY_CLASS                  = PlatformPspRomArmorAllowlistLib
 
 [Sources]
-  PspRomArmorWhitelistLib.c
+  PspRomArmorAllowlistLib.c
 
 [Packages]
   AgesaModulePkg/AgesaCommonModulePkg.dec

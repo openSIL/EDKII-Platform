@@ -1043,7 +1043,7 @@
 
 [LibraryClasses.Common.DXE_SMM_DRIVER]
   AmdPspFlashAccLib|AmdPspFeaturePkg/Library/AmdPspFlashAccLibSmm/AmdPspFlashAccLibSmm.inf
-  PlatformPspRomArmorWhitelistLib|AmdPspFeaturePkg/Library/PspRomArmorWhitelistLib/PspRomArmorWhitelistLib.inf
+  PlatformPspRomArmorAllowlistLib|AmdPspFeaturePkg/Library/PspRomArmorAllowlistLib/PspRomArmorAllowlistLib.inf
 !if $(RUNTIME_LOGGING_ENABLE)
   DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
 !else
