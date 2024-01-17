@@ -27,7 +27,6 @@ The beta release of the EDKII-Platform is intended to integrate with the AMD ope
   * [AMD openSIL - Genoa POC](https://github.com/openSIL/openSIL)
   * [opensil-uefi-interface](https://github.com/openSIL/opensil-uefi-interface)
   * [AGCL-R (AGESA Compatibility Layer - Reduced)](https://github.com/openSIL/AGCL-R)
-    * **AGCL-R (required for build) public release to follow.**
   * [EDKII-Platform Code (this repository)](https://github.com/openSIL/EDKII-Platform)
 
 ## Configuring Build Environment
@@ -40,7 +39,6 @@ The beta release of the EDKII-Platform is intended to integrate with the AMD ope
       * Clone to 'workspace\AmdOpenSilPkg' directory.
       * The opensil-uefi-interface includes the [AMD openSIL - Genoa POC](https://github.com/openSIL/openSIL) repository as a submodule.
     * AGCL-R: [AGCL-R (AGESA Compatibility Layer - Reduced)](https://github.com/openSIL/AGCL-R)
-      * **AGCL-R public release and instructions for cloning to follow.**
     * Platform: [EDKII-Platform Code (this repository)](https://github.com/openSIL/EDKII-Platform)
       * Clone to 'workspace\Platform' directory.
 
