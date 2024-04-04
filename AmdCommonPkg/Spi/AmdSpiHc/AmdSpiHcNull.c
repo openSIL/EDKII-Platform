@@ -1,13 +1,12 @@
 /*****************************************************************************
  *
- * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
 #include <Library/DebugLib.h>
 #include <Library/IoLib.h>
 #include <Protocol/SpiHc.h>
-#include <FchRegistersCommon.h>
 #include "AmdSpiHcNull.h"
 
 /**

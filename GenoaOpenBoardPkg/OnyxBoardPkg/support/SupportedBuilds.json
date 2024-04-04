@@ -10,9 +10,6 @@
     "board": "Onyx",
     "build": "EXTERNAL",
     "secure": "False",
-    "simnow": "False",
-    "emulation": "False",
-    "cbs": "False",
     "dir": "GenoaOpenBoardPkg"
   }
 }

@@ -1,20 +1,12 @@
 /******************************************************************************
- * Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2021-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *******************************************************************************
  **/
 
 #include "SmbiosCommon.h"
-#include <Protocol/AmdCpmTableProtocol/AmdCpmTableProtocol.h>
 #include <Library/PrintLib.h>
-
-#include <GnbDxio.h>
-#include <Guid/GnbPcieInfoHob.h>
-#include <Library/NbioCommonLibDxe.h>
-#include <Library/NbioHandleLib.h>
-#include <Library/PcieConfigLib.h>
 #include <Library/HobLib.h>
-#include <AmdPcieComplex.h>
 
 /**
   This function returns SBDF information for a given slot number.
@@ -39,53 +31,13 @@ SlotBdfInfo(
   OUT UINT8    *DevFunInfo
   )
 {
-  PCIe_PLATFORM_CONFIG             *Pcie;
-  PCIe_COMPLEX_CONFIG              *ComplexList;
-  PCIe_SILICON_CONFIG              *SiliconList;
-  PCIe_WRAPPER_CONFIG              *WrapperList;
-  PCIe_ENGINE_CONFIG               *EngineList;
-
-  if (SlotNumInfo == NULL || SegInfo == NULL || BusInfo == NULL || DevFunInfo == NULL) {
-    return EFI_INVALID_PARAMETER;
-  }
-
-  Pcie = NULL;
-  PcieGetPcieDxe (&Pcie);
-  ComplexList = (PCIe_COMPLEX_CONFIG *) PcieConfigGetChild (DESCRIPTOR_COMPLEX, &Pcie->Header);
-
-  while (ComplexList != NULL) {
-    SiliconList = PcieConfigGetChildSilicon (ComplexList);
-    while (SiliconList != NULL) {
-      WrapperList = PcieConfigGetChildWrapper (SiliconList);
-      while (WrapperList != NULL) {
-        EngineList = PcieConfigGetChildEngine (WrapperList);
-        while (EngineList != NULL) {
-          if (EngineList->Type.Port.PortData.SlotNum == *SlotNumInfo) {
-            *SegInfo = EngineList->Type.Port.Address.Address.Segment & 0xFFFF;
-            *BusInfo = EngineList->Type.Port.Address.Address.Bus & 0xFF;
-            *DevFunInfo = (((EngineList->Type.Port.Address.Address.Device) & 0x1F) << 3) |
-                          ((EngineList->Type.Port.Address.Address.Function) & 0x7);
-            return EFI_SUCCESS;
-          }
-          EngineList = PcieLibGetNextDescriptor (EngineList);
-        }
-        WrapperList = PcieLibGetNextDescriptor (WrapperList);
-      }
-      SiliconList = PcieLibGetNextDescriptor (SiliconList);
-    }
-    if ((ComplexList->Header.DescriptorFlags & DESCRIPTOR_TERMINATE_TOPOLOGY) == 0) {
-      ComplexList++;
-    } else {
-      ComplexList = NULL;
-    }
-  }
   return EFI_NOT_FOUND;
 }
 
 /**
   This function allocates and populate system slot smbios record (Type 9).
 
-  @param  DxioPortPtr              Pointer to DXIO port descriptor.
+  @param  MpioPortPtr              Pointer to Mpio port descriptor.
   @param  SmbiosRecordPtr          Pointer to smbios type 9 record.
 
   @retval EFI_SUCCESS              All parameters were valid.
@@ -96,7 +48,7 @@ SlotBdfInfo(
 EFI_STATUS
 EFIAPI
 CreateSmbiosSystemSlotRecord (
-  IN DXIO_PORT_DESCRIPTOR          *DxioPortPtr,
+  IN MPIO_PORT_DESCRIPTOR          *MpioPortPtr,
   IN OUT SMBIOS_TABLE_TYPE9        **SmbiosRecordPtr
   )
 {
@@ -116,7 +68,7 @@ CreateSmbiosSystemSlotRecord (
   BusInfo = 0xFF;
   DevFunInfo = 0xFF;
 
-  if (DxioPortPtr == NULL || SmbiosRecordPtr == NULL) {
+  if (MpioPortPtr == NULL || SmbiosRecordPtr == NULL) {
     return EFI_INVALID_PARAMETER;
   }
 
@@ -124,7 +76,7 @@ CreateSmbiosSystemSlotRecord (
                     SlotDesignationStr,
                     SMBIOS_STRING_MAX_LENGTH,
                     "PCIE-%d",
-                    DxioPortPtr->Port.SlotNum
+                    MpioPortPtr->Port.SlotNum
                     );
 
   // Two zeros following the last string.
@@ -141,21 +93,21 @@ CreateSmbiosSystemSlotRecord (
     SmbiosRecord->SlotDesignation = 1;
 
     // Currently only map PCIE slots in system slot table.
-    if (DxioPortPtr->EngineData.EngineType == DxioPcieEngine) {
-      switch (DxioPortPtr->Port.LinkSpeedCapability) {
-        case DxioGenMaxSupported:
+    if (MpioPortPtr->EngineData.EngineType == MpioPcieEngine) {
+      switch (MpioPortPtr->Port.LinkSpeedCapability) {
+        case PcieGenMaxSupported:
           SmbiosRecord->SlotType = SlotTypePciExpressGen4;
           break;
-        case DxioGen1:
+        case PcieGen1:
           SmbiosRecord->SlotType = SlotTypePciExpress;
           break;
-        case DxioGen2:
+        case PcieGen2:
           SmbiosRecord->SlotType = SlotTypePciExpressGen2;
           break;
-        case DxioGen3:
+        case PcieGen3:
           SmbiosRecord->SlotType = SlotTypePciExpressGen3;
           break;
-        case DxioGen4:
+        case PcieGen4:
           SmbiosRecord->SlotType = SlotTypePciExpressGen4;
           break;
         default:
@@ -166,8 +118,8 @@ CreateSmbiosSystemSlotRecord (
       SmbiosRecord->SlotType = SlotTypeOther;
     }
 
-    switch (DxioPortPtr->EngineData.DxioEndLane -
-      DxioPortPtr->EngineData.DxioStartLane) {
+    switch (MpioPortPtr->EngineData.MpioEndLane -
+      MpioPortPtr->EngineData.MpioStartLane) {
       case 15:
         SmbiosRecord->SlotDataBusWidth = SlotDataBusWidth16X;
         SmbiosRecord->DataBusWidth = 16;
@@ -189,23 +141,8 @@ CreateSmbiosSystemSlotRecord (
         SmbiosRecord->DataBusWidth = 1;
         break;
     }
-#ifdef OPENSIL
-    if (0 == (DXIO_ENDPOINT_STATUS)EndpointDetect) {   // @TODO fix this 0
-#else
-    if (DxioPortPtr->Port.EndpointStatus == (DXIO_ENDPOINT_STATUS)EndpointDetect) {
-#endif
-      SmbiosRecord->CurrentUsage = SlotUsageInUse;
-#ifdef OPENSIL
-    } else if (0 == (DXIO_ENDPOINT_STATUS)EndpointNotPresent) {
-#else
-    } else if (DxioPortPtr->Port.EndpointStatus == (DXIO_ENDPOINT_STATUS)EndpointNotPresent) {
-#endif
-      SmbiosRecord->CurrentUsage = SlotUsageAvailable;
-    } else {
-      SmbiosRecord->CurrentUsage = SlotUsageUnknown;
-    }
-
-    SlotNumInfo = DxioPortPtr->Port.SlotNum;
+    SmbiosRecord->CurrentUsage = SlotUsageUnknown;
+    SlotNumInfo = MpioPortPtr->Port.SlotNum;
     Status = SlotBdfInfo(
                &SlotNumInfo,
                &SegInfo,
@@ -217,7 +154,7 @@ CreateSmbiosSystemSlotRecord (
     }
 
     SmbiosRecord->SlotLength = SlotLengthUnknown;
-    SmbiosRecord->SlotID = DxioPortPtr->Port.SlotNum;
+    SmbiosRecord->SlotID = MpioPortPtr->Port.SlotNum;
     SmbiosRecord->SlotCharacteristics1.CharacteristicsUnknown = 0x01;
     SmbiosRecord->SegmentGroupNum = SegInfo;
     SmbiosRecord->BusNum = BusInfo;
@@ -247,79 +184,5 @@ SystemSlotInfoFunction(
   IN  EFI_SMBIOS_PROTOCOL   *Smbios
   )
 {
-  EFI_STATUS                       Status;
-  EFI_SMBIOS_HANDLE                SmbiosHandle;
-  SMBIOS_TABLE_TYPE9               *SmbiosRecord;
-  AMD_CPM_TABLE_PROTOCOL           *CpmTableProtocolPtr;
-  AMD_CPM_DXIO_TOPOLOGY_TABLE      *DxioTopologyTablePtr2[2];
-  UINTN                            DxioPortIdx;
-  UINTN                            SocketIdx;
-
-  if (Smbios == NULL) {
-    return EFI_INVALID_PARAMETER;
-  }
-
-  Status = gBS->LocateProtocol (
-                  &gAmdCpmTableProtocolGuid,
-                  NULL,
-                  (VOID**)&CpmTableProtocolPtr
-                  );
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "Failed to locate AmdCpmTableProtocol: %r\n", Status));
-    return Status;
-  }
-
-  DxioTopologyTablePtr2[0] = NULL;
-  DxioTopologyTablePtr2[0] = CpmTableProtocolPtr->CommonFunction.GetTablePtr2 (
-                               CpmTableProtocolPtr,
-                               CPM_SIGNATURE_DXIO_TOPOLOGY
-                               );
-
-  DxioTopologyTablePtr2[1] = NULL;
-  DxioTopologyTablePtr2[1] = CpmTableProtocolPtr->CommonFunction.GetTablePtr2 (
-                               CpmTableProtocolPtr,
-                               CPM_SIGNATURE_DXIO_TOPOLOGY_S1
-                               );
-
-  // Add Smbios System Slot information for all sockets present.
-  for (SocketIdx = 0; SocketIdx < FixedPcdGet32(PcdAmdNumberOfPhysicalSocket); SocketIdx++ ) {
-
-    if (DxioTopologyTablePtr2[SocketIdx] != NULL) {
-
-      for (DxioPortIdx = 0; DxioPortIdx < AMD_DXIO_PORT_DESCRIPTOR_SIZE;
-        DxioPortIdx++) {
-        // Check if Slot is present
-        if (DxioTopologyTablePtr2[SocketIdx]->Port[DxioPortIdx].Port.SlotNum > 0 &&
-            DxioTopologyTablePtr2[SocketIdx]->Port[DxioPortIdx].Port.PortPresent == 1) {
-
-          SmbiosRecord = NULL;
-          Status = CreateSmbiosSystemSlotRecord (
-                     &DxioTopologyTablePtr2[SocketIdx]->Port[DxioPortIdx],
-                     &SmbiosRecord
-                     );
-
-          if (EFI_ERROR (Status)) {
-            DEBUG ((DEBUG_ERROR, "%a: Smbios system slot error: Status=%r\n",
-            __FUNCTION__, Status));
-          } else {
-            Status = AddCommonSmbiosRecord (
-                       Smbios,
-                       &SmbiosHandle,
-                       (EFI_SMBIOS_TABLE_HEADER *) SmbiosRecord
-                       );
-          }
-
-        if (SmbiosRecord != NULL) {
-            FreePool(SmbiosRecord);
-          }
-        }
-        // Terminate if last port found.
-        if((DxioTopologyTablePtr2[SocketIdx]->Port[DxioPortIdx].Flags & 0x80000000)) {
-          break;
-        }
-      }
-    }
-  }
-
-  return Status;
+  return EFI_SUCCESS;
 }

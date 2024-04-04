@@ -6,7 +6,7 @@
 
 #include <Library/BaseMemoryLib.h>
 #include <Uefi/UefiBaseType.h>
-#include <FchEspiGenoaLib.h>
+#include <Library/FchEspiGenoaLib.h>
 
 
 /**

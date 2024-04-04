@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *******************************************************************************
  **/
@@ -34,7 +34,6 @@
 
 #include "TscTimerLibInternal.h"
 #include <Library/DebugLib.h>
-#include <FchRegistersCommon.h>
 
 // FCH::PM::TMRVALUE_ETMRVALUE Offset
 #define FCH_PMIOA_REG508          0x508

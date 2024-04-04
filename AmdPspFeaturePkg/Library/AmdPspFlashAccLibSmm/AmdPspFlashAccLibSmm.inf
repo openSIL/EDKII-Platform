@@ -1,6 +1,6 @@
 #;*****************************************************************************
 #;
-#; Copyright (C) 2008-2023 Advanced Micro Devices, Inc. All rights reserved.
+#; Copyright (C) 2008-2022 Advanced Micro Devices, Inc. All rights reserved.
 #;
 #;******************************************************************************
 [Defines]
@@ -18,10 +18,9 @@
 [Packages]
   MdePkg/MdePkg.dec
   AgesaModulePkg/AgesaCommonModulePkg.dec
-  AgesaModulePkg/AgesaModulePspPkg.dec
   AmdCommonPkg/AmdCommonPkg.dec
   UefiCpuPkg/UefiCpuPkg.dec
-  AgesaPkg/AgesaPkg.dec
+  AgesaPkg/AgesaPublicPkg.dec
   MinPlatformPkg/MinPlatformPkg.dec
 
 
@@ -29,7 +28,6 @@
   UefiBootServicesTableLib
   SmmServicesTableLib
   DebugLib
-  AmdPspBaseLibV2
   BaseLib
 
 [Guids]

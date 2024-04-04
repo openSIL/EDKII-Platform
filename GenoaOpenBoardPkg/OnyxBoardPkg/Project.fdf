@@ -1,5 +1,5 @@
 #;*****************************************************************************
-#; Copyright (C) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
+#; Copyright (C) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
 #;
 #;*****************************************************************************
 
@@ -14,8 +14,8 @@
 
 [Defines]
   !include $(PLATFORM_NAME)/Include/Fdf/FlashMapInclude.fdf
-    DEFINE AGESA_PEI_INC_FDF = $(PLATFORM_NAME)/Include/AgesaInc/AgesaExt.pei.inc.fdf
-    DEFINE AGESA_DXE_INC_FDF = $(PLATFORM_NAME)/Include/AgesaInc/AgesaExt.dxe.inc.fdf
+  DEFINE AGESA_PEI_INC_FDF = $(PLATFORM_NAME)/Include/AgesaInc/AgesaExt.pei.inc.fdf
+  DEFINE AGESA_DXE_INC_FDF = $(PLATFORM_NAME)/Include/AgesaInc/AgesaExt.dxe.inc.fdf
 #-----------------------------------------------------------
 #  End of [Defines] section
 #-----------------------------------------------------------
@@ -264,7 +264,6 @@
   #
   # AMD AGCL PEI Includes
   #
-  !include AmdCpmPkg/Addendum/Oem/$(BOARD_NAME)/Processor/$(PROCESSOR_NAME)/AmdCpm$(PROCESSOR_NAME)$(BOARD_NAME)Pkg.pei.inc.fdf
   !include $(AGESA_PEI_INC_FDF)
 
 [FV.FvAdvancedPreMemory]
@@ -377,7 +376,6 @@
 
   # AMD AGCL DXE Includes
   #
-  !include AmdCpmPkg/Addendum/Oem/$(BOARD_NAME)/Processor/$(PROCESSOR_NAME)/AmdCpm$(PROCESSOR_NAME)$(BOARD_NAME)Pkg.dxe.inc.fdf
   !include $(AGESA_DXE_INC_FDF)
 
   # EDK Core modules
@@ -393,12 +391,7 @@
   !endif
 
   # Console
-  # INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
   INF CrbSupportPkg/BmcGopDxe/BmcGopDxe.inf
-  INF AmdCpmPkg/Library/AmdAutoDynamicCommand/AmdAutoDynamicCommand.inf
-  INF AmdCpmPkg/Library/AmdAutoDynamicCommand/AmdAutoToolApp.inf
-
-  INF AmdCpmPkg/Addendum/Oem/Onyx/Dxe/PspPlatformDriver/PspPlatform.inf
 
   # UEFI Shell
   !if $(SHELL_BIN_PACKAGE)

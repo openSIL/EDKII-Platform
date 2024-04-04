@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2021-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
@@ -10,7 +10,7 @@
 #include <Library/PcdLib.h>
 #include <Register/AmdIoApic.h>
 #include <Protocol/PciRootBridgeIo.h>
-#include <Protocol/AmdPciResourcesProtocol.h>
+#include <Library/PcieResourcesLib.h>
 
 #define OEM_REVISION_NUMBER   1
 #define CREATOR_REVISION      2

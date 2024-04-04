@@ -1,5 +1,5 @@
 #;*****************************************************************************
-#; Copyright (C) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
+#; Copyright (C) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
 #;
 #;******************************************************************************
 
@@ -10,9 +10,6 @@
 # FIRMWARE_VERSION_STR
 # SIL_PLATFORM_NAME
 # AMD_PROCESSOR
-# CBS_INCLUDE
-# SIMNOW_SUPPORT
-# EMULATION
 # *****************************************************************************
 
 [Defines]
@@ -26,7 +23,6 @@
   OUTPUT_DIRECTORY               = Build/$(PLATFORM_NAME)_$(PROCESSOR_NAME)
   OUTPUT_DIRECTORY               = $(OUTPUT_DIRECTORY)_EXTERNAL
   SUPPORTED_ARCHITECTURES        = IA32|X64
-  CBS_INCLUDE                    = FALSE
   BUILD_TARGETS                  = DEBUG|RELEASE|NOOPT
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = $(PLATFORM_NAME)/Project.fdf
@@ -80,9 +76,6 @@
   #            3. BMC configured to use eSPI virtual UART 0x3F8
   DEFINE SERIAL_PORT            = "BMC_SOL_IO"
 
-  DEFINE USB_SUPPORT           = TRUE
-  DEFINE SATA_SUPPORT          = TRUE
-
   #
   # Set Serial Port Base Address
   #
@@ -112,14 +105,11 @@
   #
   # AMD AGCL Includes - After [Defines] section.
   #
-  !include AmdCpmPkg/Addendum/Oem/$(BOARD_NAME)/Processor/$(PROCESSOR_NAME)/AmdCpm$(PROCESSOR_NAME)$(BOARD_NAME)Pkg.inc.dsc
   !include $(AGESA_INC_DSC)
   !include $(PLATFORM_NAME)/Include/Dsc/Smbios.dsc
 
   # OPENSIL
-  # OPENSIL_OVERRIDE STARTS
   !include AmdOpenSilPkg/opensil-uefi-interface/AmdOpenSilPkg.dsc
-  # OPENSIL_OVERRIDE ENDS
 
 [Packages]
   MinPlatformPkg/MinPlatformPkg.dec
@@ -316,12 +306,6 @@
   #  This causes function RtcWaitToUpdate to return an error. Preset VRT to 1 to avoid this.
   #
   gPcAtChipsetPkgTokenSpaceGuid.PcdInitialValueRtcRegisterD|0x80
-
-
-  gEfiAmdAgesaPkgTokenSpaceGuid.PcdAmdIdsDebugPrintEnable|FALSE
-  gEfiAmdAgesaPkgTokenSpaceGuid.PcdAmdIdsDebugPrintSerialPortEnable|FALSE
-
-  gEfiMdePkgTokenSpaceGuid.PcdPerformanceLibraryPropertyMask|0x00
 
   #
   #SMBIOS
@@ -548,7 +532,7 @@
   gMinPlatformPkgTokenSpaceGuid.PcdFadtFlags|0x0002052D
   gPcAtChipsetPkgTokenSpaceGuid.PcdHpetBaseAddress|0xFED00000
   gEfiAmdAgesaPkgTokenSpaceGuid.PcdAmdAcpiCpuSsdtProcessorScopeInSb|TRUE
-  gMinPlatformPkgTokenSpaceGuid.PcdIoApicId|0x80   # gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdCfgFchIoapicId
+  gMinPlatformPkgTokenSpaceGuid.PcdIoApicId|0x80
   gMinPlatformPkgTokenSpaceGuid.PcdPcIoApicCount|4
   gMinPlatformPkgTokenSpaceGuid.PcdPcIoApicIdBase|0xF1
   gMinPlatformPkgTokenSpaceGuid.PcdPcIoApicAddressBase|0xFEC00000
@@ -566,14 +550,6 @@
   #
   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxVariableSize|0x3000
 
-  #
-  # AGCL NBIO
-  #
-  gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdCfgIommuMMIOAddressReservedEnable|TRUE
-  gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdCfgIoApicMMIOAddressReservedEnable|TRUE
-  gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdCfgIoApicIdPreDefineEn|TRUE   #### Makes PEI assign IOAPIC IDs
-  gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdCfgIoApicIdBase|0xF1
-
   gEfiAmdAgesaPkgTokenSpaceGuid.PcdCompliantEdkIIAcpiSdtProtocol|TRUE
 
   # AGCL FCH
@@ -587,12 +563,6 @@
   gEfiAmdAgesaPkgTokenSpaceGuid.PcdFchOemSpiUnlockSwSmi|0xB7
   gEfiAmdAgesaPkgTokenSpaceGuid.PcdFchOemSpiLockSwSmi|0xB8
   gEfiAmdAgesaPkgTokenSpaceGuid.PcdAmdNumberOfPhysicalSocket|gMinPlatformPkgTokenSpaceGuid.PcdMaxCpuSocketCount
-  gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdAmdMemCfgMaxPostPackageRepairEntries|0x3F
-
-  #
-  # Memory
-  #
-  gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdAmdMemMaxDimmPerChannelV2|1
 
   # Change MTRR defaults for 0xE0000-0xFFFFF
   gEfiAmdAgesaPkgTokenSpaceGuid.PcdAmdFixedMtrr26C|0xFFFFFFFFFFFFFFFF
@@ -625,7 +595,6 @@
   # Specifies stack size in bytes for each processor in SMM.
   gUefiCpuPkgTokenSpaceGuid.PcdCpuSmmStackSize|0x4000
   gEfiAmdAgesaPkgTokenSpaceGuid.PcdAmdAcpiTableHeaderOemId|gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId
-  gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdAmdMemMaxSocketSupportedV2|1
 
   # Secureboot
   !if gMinPlatformPkgTokenSpaceGuid.PcdUefiSecureBootEnable == TRUE
@@ -668,12 +637,7 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase64|0
 
   #
-  # AGCL NBIO
-  #
-  gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdCfgGnbIoapicId|gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdCfgIoApicIdBase
-
-  #
-  # AGCL FCH
+  # AGESA FCH
   #
   gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdLegacyFree|FALSE
   gEfiAmdAgesaModulePkgTokenSpaceGuid.PcdHpetEnable|TRUE
@@ -927,6 +891,8 @@
   TestPointCheckLib|MinPlatformPkg/Test/Library/TestPointCheckLibNull/TestPointCheckLibNull.inf
   PlatformBootManagerLib|MinPlatformPkg/Bds/Library/DxePlatformBootManagerLib/DxePlatformBootManagerLib.inf
   LocalApicLib|AmdCommonPkg/Library/BaseXApicX2ApicLib/BaseXApicX2ApicLib.inf
+  PcieResourcesLib|AgesaModulePkg/Library/PcieResourcesLib/PcieResourcesLib.inf
+  FabricResourceManagerLib|AgesaModulePkg/Library/FabricResourceManagerGenoaLib/FabricResourceManagerLib.inf  
   IpmiBaseLib|AmdCommonPkg/Ipmi/Library/AmdIpmiLib/AmdIpmiLib.inf
   PciSegmentLib|MdePkg/Library/PciSegmentLibSegmentInfo/BasePciSegmentLibSegmentInfo.inf
 
@@ -945,10 +911,8 @@
   !else
     PeCoffExtraActionLib|MdePkg/Library/BasePeCoffExtraActionLibNull/BasePeCoffExtraActionLibNull.inf
   !endif
-  ## PciCf8Lib|MdePkg/Library/BasePciCf8Lib/BasePciCf8Lib.inf
-  ## PciLib|MdePkg/Library/BasePciLibCf8/BasePciLibCf8.inf
   PciLib|MdePkg/Library/BasePciLibPciExpress/BasePciLibPciExpress.inf
-  PciSegmentInfoLib|AgesaPkg/Addendum/PciSegments/PciExpressPciSegmentInfoLib/PciExpressPciSegmentInfoLib.inf
+  PciSegmentInfoLib|MinPlatformPkg/Pci/Library/PciSegmentInfoLibSimple/PciSegmentInfoLibSimple.inf
 
   #
   # Generic Modules
@@ -977,19 +941,9 @@
 !endif
   TimerLib|AmdCommonPkg/Library/TscTimerLib/DxeTscTimerLib.inf
   PciHostBridgeLib|AgesaModulePkg/Library/DxeAmdPciHostBridgeLib/PciHostBridgeLib.inf
-
   AcpiSdtParserLib|AmdCommonPkg/Library/DxeAcpiSdtParserLib/DxeAcpiSdtParserLib.inf
   AslUpdateLib|MinPlatformPkg/Acpi/Library/DxeAslUpdateLib/DxeAslUpdateLib.inf
   BoardAcpiTableLib|MinPlatformPkg/Acpi/Library/BoardAcpiTableLibNull/BoardAcpiTableLibNull.inf
-
-  #
-  # AMD AGCL
-  #
-  AmdCalloutLib|AgesaModulePkg/Library/AmdCalloutLib/AmdCalloutLib.inf
-  ## AmdMemServicesCzLib|AgesaModulePkg/Library/Mem/ServicesCzLib/AmdMemServicesCzLib.inf
-  ## AmdPspFlashAccLib|AgesaPkg/Addendum/Psp/AmdPspFlashAccLibSmm/AmdPspFlashAccLibSmm.inf
-  OemAgesaCcxPlatformLib|AgesaPkg/Addendum/Ccx/OemAgesaCcxPlatformLibNull/OemAgesaCcxPlatformLibNull.inf
-  ##OemGpioResetControlLib|AgesaPkg/Addendum/Nbio/OemGpioResetControlLibNull/OemGpioResetControlLibNull.inf
 
   #
   # AMD AML
@@ -1022,6 +976,12 @@
   # AGCL FCH Platform/OEM hook
   FchInitHookLibPei|AmdCommonPkg/Library/FchInitHookLib/FchInitHookLibPei.inf
 
+  libAMDxPRF|AmdOpenSilPkg/opensil-uefi-interface/libAMDxPRF.inf
+  libAMDxSIM|AmdOpenSilPkg/opensil-uefi-interface/libF19M10xSIM.inf
+  libAMDxUSL|AmdOpenSilPkg/opensil-uefi-interface/libAMDxUSL.inf
+  SilEfiLib|AmdOpenSilPkg/opensil-uefi-interface/SilToUefi/SilEfiPI72.inf
+  SilPeiInit|AmdOpenSilPkg/opensil-uefi-interface/Platform/SilPei.inf
+
 [LibraryClasses.IA32.SEC]
   #####################################
   # Platform Package
@@ -1035,15 +995,21 @@
 
 [LibraryClasses.Common.DXE_DRIVER]
   SmbiosMiscLib|$(PROCESSOR_PATH)/$(PLATFORM_NAME)/Library/SmbiosMiscLib/SmbiosMiscLib.inf
+  libAMDxPRF|AmdOpenSilPkg/opensil-uefi-interface/libAMDxPRF.inf
+  libAMDxSIM|AmdOpenSilPkg/opensil-uefi-interface/libF19M10xSIM.inf
+  libAMDxUSL|AmdOpenSilPkg/opensil-uefi-interface/libAMDxUSL.inf
+  SilEfiLib|AmdOpenSilPkg/opensil-uefi-interface/SilToUefi/SilEfiPI72.inf
+  SilDxeInit|AmdOpenSilPkg/opensil-uefi-interface/Platform/SilDxe.inf
 
 [LibraryClasses.Common.DXE_CORE, LibraryClasses.Common.DXE_DRIVER, LibraryClasses.Common.DXE_SMM_DRIVER]
   TimerLib|AmdCommonPkg/Library/TscTimerLib/DxeTscTimerLib.inf
   BoardBdsHookLib|AmdBoardPkg/Library/BoardBdsHookLib/BoardBdsHookLib.inf
   BoardBootManagerLib|BoardModulePkg/Library/BoardBootManagerLib/BoardBootManagerLib.inf
+  libAMDxSIM|AmdOpenSilPkg/opensil-uefi-interface/libF19M10xSIM.inf
+  libAMDxUSL|AmdOpenSilPkg/opensil-uefi-interface/libAMDxUSL.inf
+  SilEfiLib|AmdOpenSilPkg/opensil-uefi-interface/SilToUefi/SilEfiPI72.inf
 
 [LibraryClasses.Common.DXE_SMM_DRIVER]
-  AmdPspFlashAccLib|AmdPspFeaturePkg/Library/AmdPspFlashAccLibSmm/AmdPspFlashAccLibSmm.inf
-  PlatformPspRomArmorAllowlistLib|AmdPspFeaturePkg/Library/PspRomArmorAllowlistLib/PspRomArmorAllowlistLib.inf
 !if $(RUNTIME_LOGGING_ENABLE)
   DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
 !else
@@ -1060,6 +1026,11 @@ SmmCorePlatformHookLib|AmdCommonPkg/Library/SmmCorePlatformHookLib/SmmCorePlatfo
 
 [LibraryClasses.Common.DXE_RUNTIME_DRIVER, LibraryClasses.Common.UEFI_DRIVER]
   TimerLib|AmdCommonPkg/Library/TscTimerLib/DxeTscTimerLib.inf
+  TimerLib|AmdCommonPkg/Library/TscTimerLib/DxeTscTimerLib.inf
+  ResetSystemLib|Platform/AmdCommonPkg/Library/DxeRuntimeResetSystemLib/DxeRuntimeResetSystemLib.inf
+  libAMDxSIM|AmdOpenSilPkg/opensil-uefi-interface/libF19M10xSIM.inf
+  libAMDxUSL|AmdOpenSilPkg/opensil-uefi-interface/libAMDxUSL.inf
+  SilEfiLib|AmdOpenSilPkg/opensil-uefi-interface/SilToUefi/SilEfiPI72.inf
 
 [LibraryClasses.Common.DXE_RUNTIME_DRIVER]
   PciSegmentLib|MdePkg/Library/PciSegmentLibSegmentInfo/DxeRuntimePciSegmentLibSegmentInfo.inf
@@ -1108,6 +1079,7 @@ SmmCorePlatformHookLib|AmdCommonPkg/Library/SmmCorePlatformHookLib/SmmCorePlatfo
     <LibraryClasses>
       DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   }
+  $(PROCESSOR_PATH)/Pei/AmdPlatformPei.inf
 
   #
   # SEC Core
@@ -1150,6 +1122,13 @@ SmmCorePlatformHookLib|AmdCommonPkg/Library/SmmCorePlatformHookLib/SmmCorePlatfo
     MinPlatformPkg/Tcg/Tcg2PlatformPei/Tcg2PlatformPei.inf
   !endif
 
+  # OPENSIL
+  AmdOpenSilPkg/opensil-uefi-interface/Platform/Onyx-Genoa/Pei/SilOnyxPei.inf {
+    <LibraryClasses>
+      AmdOemInitOnyxLib|AgesaPkg/Addendum/Oem/Onyx/Pei/AmdOemInitOnyxLib.inf
+  }
+
+
   # IPMI
   AmdCommonPkg/Ipmi/AmdIpmiPei/AmdIpmiPei.inf
 
@@ -1165,13 +1144,6 @@ SmmCorePlatformHookLib|AmdCommonPkg/Library/SmmCorePlatformHookLib/SmmCorePlatfo
   }
 !endif
 
-  AmdCpmPkg/Library/AmdAutoDynamicCommand/AmdAutoDynamicCommand.inf {
-    <PcdsFixedAtBuild>
-      gEfiShellPkgTokenSpaceGuid.PcdShellLibAutoInitialize|FALSE
-  }
-  AmdCpmPkg/Library/AmdAutoDynamicCommand/AmdAutoToolApp.inf
-
-  AmdCpmPkg/Addendum/Oem/Onyx/Dxe/PspPlatformDriver/PspPlatform.inf
 
   #
   # EDK Core modules
@@ -1359,14 +1331,6 @@ SmmCorePlatformHookLib|AmdCommonPkg/Library/SmmCorePlatformHookLib/SmmCorePlatfo
 
   !if gMinPlatformPkgTokenSpaceGuid.PcdUefiSecureBootEnable == TRUE
     AmdCommonPkg/SecureBoot/SecureBootDefaultKeysInit/SecureBootDefaultKeysInit.inf
-  !endif
-
-  # AGCL OVERRIDE
-  !if gMinPlatformPkgTokenSpaceGuid.PcdBootToShellOnly == TRUE
-    AgesaModulePkg/Fch/9004/Fch9004SmmControlDxe/SmmControl.inf {
-      <LibraryClasses>
-        NULL|AmdCommonPkg/Library/BaseAlwaysFalseDepexLib/BaseAlwaysFalseDepexLib.inf
-    }
   !endif
 
 [BuildOptions]

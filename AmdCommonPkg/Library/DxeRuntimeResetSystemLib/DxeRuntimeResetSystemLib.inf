@@ -1,5 +1,5 @@
 #;*****************************************************************************
-#; Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
+#; Copyright (C) 2021-2022 Advanced Micro Devices, Inc. All rights reserved.
 #;
 #;******************************************************************************
 #
@@ -17,15 +17,14 @@
 
 [LibraryClasses]
   DebugLib
-  AmdBaseLib
 
 [Guids]
   gEfiAmdAgesaSpecificWarmResetGuid
 
 [Packages]
   MdePkg/MdePkg.dec
-  AgesaPkg/AgesaPkg.dec
-  AgesaModulePkg/AgesaModuleFchPkg.dec
+  AgesaPkg/AgesaPublicPkg.dec
+  AgesaModulePkg/AgesaPublicModulePkg.dec
 
 [Pcd]
   gEfiAmdAgesaPkgTokenSpaceGuid.PcdFchFullHardReset

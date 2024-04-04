@@ -1,5 +1,5 @@
 #;*****************************************************************************
-#; Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
+#; Copyright (C) 2021-2022 Advanced Micro Devices, Inc. All rights reserved.
 #;
 #;******************************************************************************
 
@@ -36,10 +36,8 @@
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   AmdCommonPkg/AmdCommonPkg.dec
-  AmdCpmPkg/AmdCpmPkg.dec
-  AgesaPkg/AgesaPkg.dec
-  AgesaModulePkg/AgesaCommonModulePkg.dec
-  AgesaModulePkg/AgesaModuleNbioPkg.dec
+  AgesaPkg/AgesaPublicPkg.dec
+  AmdOpenSilPkg/opensil-uefi-interface/AmdOpenSilPkg.dec
 
 [LibraryClasses]
   BaseLib
@@ -51,16 +49,11 @@
   UefiLib
   SmbiosMiscLib
   PciSegmentLib
-  NbioCommonDxeLib
-  NbioHandleLib
-  PcieConfigLib
   HobLib
 
 [Protocols]
   gEfiSmbiosProtocolGuid                       # PROTOCOL ALWAYS_CONSUMED
-  gAmdCpmTableProtocolGuid
   gEfiPciEnumerationCompleteProtocolGuid       # CONSUMES
-  gAmdSocLogicalIdProtocolGuid
 
 [Pcd]
   gAmdCommonPkgTokenSpaceGuid.PcdIpmiInterfaceType

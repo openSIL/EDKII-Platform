@@ -1,6 +1,6 @@
 """
 *******************************************************************************
- Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
+ Copyright (C) 2021-2022 Advanced Micro Devices, Inc. All rights reserved.
 
 *******************************************************************************
 """
@@ -11,7 +11,8 @@ from buildsupport import build_module_only
 # Make sure python environment knows where to find bios_tar.py
 search_path = os.path.join(
                 os.environ['WORKSPACE'],
-                'AmdCpmPkg',
+                'Platform',
+                'PlatformTools',
                 'Tools',
                 'bios_tar',
                 ''

@@ -1,6 +1,6 @@
 #/*****************************************************************************
 # *
-# * Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
+# * Copyright (C) 2021-2022 Advanced Micro Devices, Inc. All rights reserved.
 # *
 # *****************************************************************************/
 #
@@ -38,13 +38,10 @@
   UefiCpuPkg/UefiCpuPkg.dec
   MinPlatformPkg/MinPlatformPkg.dec
   PcAtChipsetPkg/PcAtChipsetPkg.dec
-  # AMD_EDKII_OVERRIDE START
-  AgesaPkg/AgesaPkg.dec
-  AgesaModulePkg/AgesaCommonModulePkg.dec
-  AgesaModulePkg/AgesaModuleDfPkg.dec
-  AgesaModulePkg/AgesaModuleNbioPkg.dec
+  AgesaPkg/AgesaPublicPkg.dec
+  AgesaModulePkg/Fch/9004/Fch9004.dec
   AmdCommonPkg/AmdCommonPkg.dec
- # AMD_EDKII_OVERRIDE END
+  AmdOpenSilPkg/opensil-uefi-interface/AmdOpenSilPkg.dec
 
 [LibraryClasses]
   UefiDriverEntryPoint
@@ -60,10 +57,8 @@
   AslUpdateLib
   SortLib
   LocalApicLib
-  # AMD_EDKII_OVERRIDE START
-  NbioHandleLib
-  SmnAccessLib
-  # AMD_EDKII_OVERRIDE END
+  FabricResourceManagerLib
+  PcieResourcesLib
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId
@@ -108,18 +103,11 @@
 
   gMinPlatformPkgTokenSpaceGuid.PcdWsmtProtectionFlags
 
-  # AMD_EDKII_OVERRIDE START
   gEfiAmdAgesaPkgTokenSpaceGuid.PcdAmdFchCfgSmiCmdPortAddr
-  # AMD_EDKII_OVERRIDE END
-
 [Protocols]
   gEfiAcpiTableProtocolGuid                     ## CONSUMES
   gEfiMpServiceProtocolGuid                     ## CONSUMES
   gEfiPciIoProtocolGuid                         ## CONSUMES
-  # AMD_EDKII_OVERRIDE START
-  gAmdFabricTopologyServices2ProtocolGuid       ## CONSUMES
-  gAmdNbioPcieServicesProtocolGuid              ## CONSUMES
-  # AMD_EDKII_OVERRIDE END
 
 [Guids]
   gEfiGlobalVariableGuid                        ## CONSUMES
@@ -130,12 +118,6 @@
   gEfiAcpiTableProtocolGuid           AND
   gEfiMpServiceProtocolGuid           AND
   gEfiPciRootBridgeIoProtocolGuid     AND
-  gEfiVariableArchProtocolGuid        AND
-  # AMD_EDKII_OVERRIDE START
-  # gEfiVariableWriteArchProtocolGuid
-  gEfiVariableWriteArchProtocolGuid   AND
-  gAmdFabricTopologyServices2ProtocolGuid AND
-  gAmdNbioPcieServicesProtocolGuid
-  # AMD_EDKII_OVERRIDE END
+  gEfiVariableArchProtocolGuid
 
 

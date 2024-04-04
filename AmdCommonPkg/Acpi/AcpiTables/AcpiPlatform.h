@@ -36,11 +36,24 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/PciSegmentInfoLib.h>
 #include <Library/SortLib.h>
 #include <Library/LocalApicLib.h>
+#include <Library/FabricResourceManagerLib.h>
+#include <Library/PcieResourcesLib.h>
 
 #include <Protocol/AcpiTable.h>
 #include <Protocol/MpService.h>
 #include <Protocol/PciIo.h>
-
 #include <Register/Cpuid.h>
+
+#define IOAPIC_BASE_ADDR_LO_IOAPIC_MMIO_EN_OFFSET      0
+#define IOAPIC_BASE_ADDR_LO_IOAPIC_MMIO_EN_MASK        0x1
+// Bitfield Description : Locks the IOAPIC private MMIO address and enable until the next warm reset.
+#define IOAPIC_BASE_ADDR_LO_IOAPIC_MMIO_LOCK_OFFSET      1
+#define IOAPIC_BASE_ADDR_LO_IOAPIC_MMIO_LOCK_MASK        0x2
+// Bitfield Description :
+#define IOAPIC_BASE_ADDR_LO_Reserved_7_2_OFFSET      2
+#define IOAPIC_BASE_ADDR_LO_Reserved_7_2_MASK        0xfc
+// Bitfield Description : IOAPIC private MMIO base address bits 31:8.
+#define IOAPIC_BASE_ADDR_LO_IOAPIC_BASE_ADDR_LO_OFFSET      8
+#define IOAPIC_BASE_ADDR_LO_IOAPIC_BASE_ADDR_LO_MASK        0xffffff00
 
 #endif

@@ -1,13 +1,13 @@
 #;*****************************************************************************
-#; Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+#; Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
 #;
 #;******************************************************************************
 #
 ## @file
-# CRB specific - External AGCL build.
+# CRB specific - AGCL-R build.
 #
 ##
   #
-  # AMD AGCL Includes - External
+  # AMD AGCL-R Includes
   #
   !include AgesaModulePkg/AgesaSp5GenoaModulePkg.inc.dsc

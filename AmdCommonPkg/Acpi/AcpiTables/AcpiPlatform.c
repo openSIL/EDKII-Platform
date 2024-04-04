@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2019-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
@@ -17,17 +17,10 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 
 #include "AcpiPlatform.h"
-// AMD_EDKII_OVERRIDE START
 #include <Register/ArchitecturalMsr.h>
-#include <Protocol/FabricTopologyServices2.h>
-#include <Protocol/AmdNbioPcieServicesProtocol.h>
-#include <GnbRegistersGenoa.h>
 #include <Register/AmdIoApic.h>
-#include <Guid/GnbPcieInfoHob.h>
-#include <Library/NbioHandleLib.h>
-#include <Library/PcieConfigLib.h>
-#include <Library/SmnAccessLib.h>
-// AMD_EDKII_OVERRIDE END
+
+extern NBIO_IP2IP_API                  *NbioIp2Ip;
 
 #pragma pack(1)
 
@@ -836,17 +829,14 @@ InstallMadtFromScratch (
   // UINT32                                              PcIoApicEnable;
   // UINT32                                              PcIoApicMask;
   // UINTN                                               PcIoApicIndex;
-  AMD_FABRIC_TOPOLOGY_SERVICES2_PROTOCOL              *FabricTopology;
   EFI_ACPI_6_3_IO_APIC_STRUCTURE                      *IoApicStructPtr;
   IOAPIC_LIST_ENTRY                                   *IoApicListEntry;
   IOAPIC_LIST_ENTRY                                   *IoApicListHead;
-  DXE_AMD_NBIO_PCIE_SERVICES_PROTOCOL                 *PcieServicesProtocol;
-  PCIe_PLATFORM_CONFIG                                *Pcie;
+  PCIe_PLATFORM_CONFIG                                *Pcie = NULL;
   GNB_HANDLE                                          *GnbHandle;
-  GNB_PCIE_INFORMATION_DATA_HOB                       *PciePlatformConfigHobData;
-  UINTN                                               TotalRootBridges;
+  UINT32                                              TotalRootBridges;
   UINT32                                              GlobalSystemInterruptBase;
-  IOAPIC_BASE_ADDR_LO_STRUCT                          IoApicAddress;
+  UINT32                                              IoApicAddress;
   IO_APIC_VERSION_REGISTER                            IoApicVersionRegister;
   IO_APIC_IDENTIFICATION_REGISTER                     IoApicIdentificationRegister;
   // AMD_EDKII_OVERRIDE END
@@ -867,19 +857,15 @@ InstallMadtFromScratch (
     goto Done;
   }
 
-  // AMD_EDKII_OVERRIDE START
-    Status = gBS->LocateProtocol (&gAmdFabricTopologyServices2ProtocolGuid,
-                                NULL, (VOID **)&FabricTopology);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "Failed to locate Fabric Topology Services: %r\n", Status));
-    goto Done;
-  }
-  Status = FabricTopology->GetSystemInfo (FabricTopology, NULL, NULL,
-                             &TotalRootBridges, NULL, NULL);
+  Status = FabricGetSystemInfo (
+                        NULL, NULL,
+                        &TotalRootBridges, NULL, NULL);
+
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "Failed to get System Info: %r\n", Status));
     goto Done;
   }
+
   // AMD_EDKII_OVERRIDE END
   MaxMadtStructCount = (UINT32) (
     mNumberOfCpus +  // processor local APIC structures
@@ -996,21 +982,19 @@ InstallMadtFromScratch (
       goto Done;
     }
   }
-  // AMD_EDKII_OVERRIDE START
-  // Need topology structure
-  Status = gBS->LocateProtocol (
-                  &gAmdNbioPcieServicesProtocolGuid,
-                  NULL,
-                  (VOID **)&PcieServicesProtocol
-                  );
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "Failed to locate NBIO PCIe Services: %r\n", Status));
-    goto Done;
+
+  Status = PcieGetTopology (&Pcie);
+  if (EFI_ERROR (Status) || (Pcie == NULL)) {
+      DEBUG ((DEBUG_ERROR, "PcieGetTopology failed: %r Pcie : %x\n", Status, Pcie));
+      goto Done;
   }
-  PcieServicesProtocol->PcieGetTopology (PcieServicesProtocol,
-                                        (UINT32 **) &PciePlatformConfigHobData);
-  Pcie = &(PciePlatformConfigHobData->PciePlatformConfigHob);
-  GnbHandle = NbioGetHandle (Pcie);
+
+  GnbHandle = NbioIp2Ip->NbioGetHandle (Pcie);
+  if (GnbHandle == NULL) {
+      Status = EFI_NOT_FOUND;
+      DEBUG ((DEBUG_ERROR, "NbioIp2Ip->NbioGetHandle failed: %r\n", Status));
+      goto Done;
+  }
   IoApicListHead = NULL;
   // Collect and sort all the NBIO IO APICS in Bus ascending order
   while (GnbHandle != NULL) {
@@ -1024,17 +1008,21 @@ InstallMadtFromScratch (
     IoApicListEntry->IoApicStruct.Length = sizeof (EFI_ACPI_6_3_IO_APIC_STRUCTURE);
     IoApicListEntry->IoApicStruct.Reserved = 0;
     // Read IOAPIC Address
-    SmnRegisterReadS (GnbHandle->Address.Address.Segment,
-        GnbHandle->Address.Address.Bus,
-        NBIO_SPACE(GnbHandle, SMN_IOHUB0NBIO0_IOAPIC_BASE_ADDR_LO_ADDRESS),
-        &IoApicAddress.Value);
+    IoApicAddress = xUSLSmnRead (
+                          GnbHandle->Address.Address.Segment,
+                          GnbHandle->Address.Address.Bus,
+                          NBIO_SPACE(GnbHandle, SMN_IOHUB0NBIO0_IOAPIC_BASE_ADDR_LO_ADDRESS));
+
     //Enable IOAPIC
-    SmnRegisterRMWS(GnbHandle->Address.Address.Segment,
-        GnbHandle->Address.Address.Bus,
-        NBIO_SPACE(GnbHandle, SMN_IOHUB0NBIO0_IOAPIC_BASE_ADDR_LO_ADDRESS),
-        (UINT32) ~(DBG_BASE_ADDR_LO_DBG_MMIO_LOCK_OFFSET & DBG_BASE_ADDR_LO_DBG_MMIO_EN_OFFSET), 0x1, 0);
+    xUSLSmnReadModifyWrite(
+              GnbHandle->Address.Address.Segment,
+              GnbHandle->Address.Address.Bus,
+              NBIO_SPACE(GnbHandle, SMN_IOHUB0NBIO0_IOAPIC_BASE_ADDR_LO_ADDRESS),
+              (UINT32) ~(IOAPIC_BASE_ADDR_LO_IOAPIC_MMIO_LOCK_OFFSET & IOAPIC_BASE_ADDR_LO_IOAPIC_MMIO_EN_OFFSET), 
+              0x1);
+
     // Store IOAPIC Address
-    IoApicListEntry->IoApicStruct.IoApicAddress = IoApicAddress.Value & IOAPIC_BASE_ADDR_LO_IOAPIC_BASE_ADDR_LO_MASK;
+    IoApicListEntry->IoApicStruct.IoApicAddress = IoApicAddress & IOAPIC_BASE_ADDR_LO_IOAPIC_BASE_ADDR_LO_MASK;
     IoApicListHead = InsertIoApicListEntry (IoApicListHead, IoApicListEntry);
 
     GnbHandle = GnbGetNextHandle (GnbHandle);

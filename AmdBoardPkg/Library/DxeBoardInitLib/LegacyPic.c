@@ -1,6 +1,6 @@
 // /*****************************************************************************
 //  *
-//  * Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+//  * Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
 //  *
 //  *****************************************************************************/
 
@@ -22,18 +22,18 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 
 #include "LegacyPic.h"
 
-UINT8                     mMasterBase             = 0xff;
-UINT8                     mSlaveBase              = 0xff;
+UINT8                     mPrimaryBase             = 0xff;
+UINT8                     mSecondaryBase              = 0xff;
 UINT16                    mProtectedModeMask      = 0xffff;
 UINT16                    mProtectedModeEdgeLevel = 0x0000;
 
 /**
-  Write to mask and edge/level triggered registers of master and slave PICs.
+  Write to mask and edge/level triggered registers of primary and secondary PICs.
 
-  @param[in]  Mask       low byte for master PIC mask register,
-                         high byte for slave PIC mask register.
-  @param[in]  EdgeLevel  low byte for master PIC edge/level triggered register,
-                         high byte for slave PIC edge/level triggered register.
+  @param[in]  Mask       low byte for primary PIC mask register,
+                         high byte for secondary PIC mask register.
+  @param[in]  EdgeLevel  low byte for primary PIC edge/level triggered register,
+                         high byte for secondary PIC edge/level triggered register.
 
 **/
 VOID
@@ -42,18 +42,18 @@ Interrupt8259WriteMask (
   IN UINT16  EdgeLevel
   )
 {
-  IoWrite8 (LEGACY_8259_MASK_REGISTER_MASTER, (UINT8) Mask);
-  IoWrite8 (LEGACY_8259_MASK_REGISTER_SLAVE, (UINT8) (Mask >> 8));
-  IoWrite8 (LEGACY_8259_EDGE_LEVEL_TRIGGERED_REGISTER_MASTER, (UINT8) EdgeLevel);
-  IoWrite8 (LEGACY_8259_EDGE_LEVEL_TRIGGERED_REGISTER_SLAVE, (UINT8) (EdgeLevel >> 8));
+  IoWrite8 (LEGACY_8259_MASK_REGISTER_PRIMARY, (UINT8) Mask);
+  IoWrite8 (LEGACY_8259_MASK_REGISTER_SECONDARY, (UINT8) (Mask >> 8));
+  IoWrite8 (LEGACY_8259_EDGE_LEVEL_TRIGGERED_REGISTER_PRIMARY, (UINT8) EdgeLevel);
+  IoWrite8 (LEGACY_8259_EDGE_LEVEL_TRIGGERED_REGISTER_SECONDARY, (UINT8) (EdgeLevel >> 8));
 }
 
 /**
-  Sets the base address for the 8259 master and slave PICs.
+  Sets the base address for the 8259 primary and secondary PICs.
 
   @param[in]  This        Indicates the EFI_LEGACY_8259_PROTOCOL instance.
-  @param[in]  MasterBase  Interrupt vectors for IRQ0-IRQ7.
-  @param[in]  SlaveBase   Interrupt vectors for IRQ8-IRQ15.
+  @param[in]  PrimaryBase  Interrupt vectors for IRQ0-IRQ7.
+  @param[in]  SecondaryBase   Interrupt vectors for IRQ8-IRQ15.
 
   @retval  EFI_SUCCESS       The 8259 PIC was programmed successfully.
   @retval  EFI_DEVICE_ERROR  There was an error while writing to the 8259 PIC.
@@ -62,8 +62,8 @@ Interrupt8259WriteMask (
 EFI_STATUS
 EFIAPI
 Interrupt8259SetVectorBase (
-  IN UINT8                     MasterBase,
-  IN UINT8                     SlaveBase
+  IN UINT8                     PrimaryBase,
+  IN UINT8                     SecondaryBase
   )
 {
   UINT8   Mask;
@@ -71,10 +71,10 @@ Interrupt8259SetVectorBase (
 
   OriginalTpl = gBS->RaiseTPL (TPL_HIGH_LEVEL);
   //
-  // Set vector base for slave PIC
+  // Set vector base for secondary PIC
   //
-  if (SlaveBase != mSlaveBase) {
-    mSlaveBase = SlaveBase;
+  if (SecondaryBase != mSecondaryBase) {
+    mSecondaryBase = SecondaryBase;
 
     //
     // Initialization sequence is needed for setting vector base.
@@ -84,39 +84,39 @@ Interrupt8259SetVectorBase (
     // Preserve interrtup mask register before initialization sequence
     // because it will be cleared during initialization
     //
-    Mask = IoRead8 (LEGACY_8259_MASK_REGISTER_SLAVE);
+    Mask = IoRead8 (LEGACY_8259_MASK_REGISTER_SECONDARY);
 
     //
     // ICW1: cascade mode, ICW4 write required
     //
-    IoWrite8 (LEGACY_8259_CONTROL_REGISTER_SLAVE, 0x11);
+    IoWrite8 (LEGACY_8259_CONTROL_REGISTER_SECONDARY, 0x11);
 
     //
     // ICW2: new vector base (must be multiple of 8)
     //
-    IoWrite8 (LEGACY_8259_MASK_REGISTER_SLAVE, mSlaveBase);
+    IoWrite8 (LEGACY_8259_MASK_REGISTER_SECONDARY, mSecondaryBase);
 
     //
-    // ICW3: slave indentification code must be 2
+    // ICW3: secondary indentification code must be 2
     //
-    IoWrite8 (LEGACY_8259_MASK_REGISTER_SLAVE, 0x02);
+    IoWrite8 (LEGACY_8259_MASK_REGISTER_SECONDARY, 0x02);
 
     //
     // ICW4: fully nested mode, non-buffered mode, normal EOI, IA processor
     //
-    IoWrite8 (LEGACY_8259_MASK_REGISTER_SLAVE, 0x01);
+    IoWrite8 (LEGACY_8259_MASK_REGISTER_SECONDARY, 0x01);
 
     //
     // Restore interrupt mask register
     //
-    IoWrite8 (LEGACY_8259_MASK_REGISTER_SLAVE, Mask);
+    IoWrite8 (LEGACY_8259_MASK_REGISTER_SECONDARY, Mask);
   }
 
   //
-  // Set vector base for master PIC
+  // Set vector base for primary PIC
   //
-  if (MasterBase != mMasterBase) {
-    mMasterBase = MasterBase;
+  if (PrimaryBase != mPrimaryBase) {
+    mPrimaryBase = PrimaryBase;
 
     //
     // Initialization sequence is needed for setting vector base.
@@ -126,37 +126,37 @@ Interrupt8259SetVectorBase (
     // Preserve interrtup mask register before initialization sequence
     // because it will be cleared during initialization
     //
-    Mask = IoRead8 (LEGACY_8259_MASK_REGISTER_MASTER);
+    Mask = IoRead8 (LEGACY_8259_MASK_REGISTER_PRIMARY);
 
     //
     // ICW1: cascade mode, ICW4 write required
     //
-    IoWrite8 (LEGACY_8259_CONTROL_REGISTER_MASTER, 0x11);
+    IoWrite8 (LEGACY_8259_CONTROL_REGISTER_PRIMARY, 0x11);
 
     //
     // ICW2: new vector base (must be multiple of 8)
     //
-    IoWrite8 (LEGACY_8259_MASK_REGISTER_MASTER, mMasterBase);
+    IoWrite8 (LEGACY_8259_MASK_REGISTER_PRIMARY, mPrimaryBase);
 
     //
-    // ICW3: slave PIC is cascaded on IRQ2
+    // ICW3: secondary PIC is cascaded on IRQ2
     //
-    IoWrite8 (LEGACY_8259_MASK_REGISTER_MASTER, 0x04);
+    IoWrite8 (LEGACY_8259_MASK_REGISTER_PRIMARY, 0x04);
 
     //
     // ICW4: fully nested mode, non-buffered mode, normal EOI, IA processor
     //
-    IoWrite8 (LEGACY_8259_MASK_REGISTER_MASTER, 0x01);
+    IoWrite8 (LEGACY_8259_MASK_REGISTER_PRIMARY, 0x01);
 
     //
     // Restore interrupt mask register
     //
-    IoWrite8 (LEGACY_8259_MASK_REGISTER_MASTER, Mask);
+    IoWrite8 (LEGACY_8259_MASK_REGISTER_PRIMARY, Mask);
   }
 
-  IoWrite8 (LEGACY_8259_CONTROL_REGISTER_SLAVE, LEGACY_8259_EOI);
-  IoWrite8 (LEGACY_8259_CONTROL_REGISTER_MASTER, LEGACY_8259_EOI);
-  
+  IoWrite8 (LEGACY_8259_CONTROL_REGISTER_PRIMARY, LEGACY_8259_EOI);
+  IoWrite8 (LEGACY_8259_CONTROL_REGISTER_SECONDARY, LEGACY_8259_EOI);
+
   gBS->RestoreTPL (OriginalTpl);
 
   return EFI_SUCCESS;
@@ -183,10 +183,10 @@ Interrupt8259EndOfInterrupt (
   }
 
   if (Irq >= Efi8259Irq8) {
-    IoWrite8 (LEGACY_8259_CONTROL_REGISTER_SLAVE, LEGACY_8259_EOI);
+    IoWrite8 (LEGACY_8259_CONTROL_REGISTER_SECONDARY, LEGACY_8259_EOI);
   }
 
-  IoWrite8 (LEGACY_8259_CONTROL_REGISTER_MASTER, LEGACY_8259_EOI);
+  IoWrite8 (LEGACY_8259_CONTROL_REGISTER_PRIMARY, LEGACY_8259_EOI);
 
   return EFI_SUCCESS;
 }
@@ -219,9 +219,9 @@ LegacyPicInit (
   }
 
   //
-  // Set the 8259 Master base to 0x68 and the 8259 Slave base to 0x70
+  // Set the 8259 Primary base to 0x68 and the 8259 Secondary base to 0x70
   //
-  Status = Interrupt8259SetVectorBase (PROTECTED_MODE_BASE_VECTOR_MASTER, PROTECTED_MODE_BASE_VECTOR_SLAVE);
+  Status = Interrupt8259SetVectorBase (PROTECTED_MODE_BASE_VECTOR_PRIMARY, PROTECTED_MODE_BASE_VECTOR_SECONDARY);
 
   //
   // Set all 8259 interrupts to edge triggered and disabled

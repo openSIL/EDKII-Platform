@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
@@ -15,7 +15,6 @@
 #include <Protocol/DxeMmReadyToLock.h>
 #include <Protocol/SpiHc.h>
 #include <Protocol/SpiHcAdditional.h>
-#include <FchRegistersCommon.h>
 #include <Spi/SpiNorFlashJedec.h>
 #include "AmdSpiHc.h"
 #include "AmdSpiHcNull.h"

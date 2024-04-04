@@ -1,6 +1,6 @@
 # *****************************************************************************
 # *
-# * Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+# * Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
 # *
 # ******************************************************************************
 #
@@ -12,7 +12,7 @@
 amd_header = """
 /*****************************************************************************
  *
- * Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 

@@ -12,8 +12,6 @@ def build_sanity_check():
         "AmdCommonTools/Server/PiExcludeList/{}_ExcludeList.txt".format(os.environ["SOC"]))
     buildfile = os.path.join(os.environ["BUILD_OUTPUT"], "build.log")
     excludefile = os.path.join(os.environ["WORKSPACE"], excludefile)
-    if os.environ['AMD_PLATFORM_BUILD_TYPE'] == "INTERNAL":
-        return
     if os.path.exists(buildfile) and os.path.exists(excludefile):
         print("Build PI sanity check ...")
         with open(buildfile, "r") as build_file:
@@ -26,9 +24,6 @@ def build_sanity_check():
                         if searchline.startswith('*'):
                             # first character * means none or any character, trim it
                             searchline = searchline[1:]
-                        if searchline.startswith('Internal'):
-                            # Special case for Internal, look only in PI delivered packages
-                            searchline = "(?:AmdCbsPkg|AgesaPkg|AgesaModulePkg|AmdCpmPkg)/*.*/" + searchline
                         foundre = set(re.findall(searchline, data))
                         if foundre:
                             print("!!! WARNING !!!: The build has a file or directory which is excluded.: {}".format(

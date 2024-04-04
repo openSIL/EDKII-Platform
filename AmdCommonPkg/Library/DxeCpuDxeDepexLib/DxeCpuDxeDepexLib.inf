@@ -1,5 +1,5 @@
 #;*****************************************************************************
-#; Copyright (C) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+#; Copyright (C) 2017-2022 Advanced Micro Devices, Inc. All rights reserved.
 #;
 #;******************************************************************************
 
@@ -22,7 +22,7 @@
 
 [Packages]
   MdePkg/MdePkg.dec
-  AgesaPkg/AgesaPkg.dec
+  AgesaPkg/AgesaPublicPkg.dec
 
 [Depex]
   gAmdMpServicesPreReqProtocolGuid

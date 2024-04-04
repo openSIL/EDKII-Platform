@@ -1,6 +1,6 @@
 """
 *******************************************************************************
- Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
+ Copyright (C) 2021-2022 Advanced Micro Devices, Inc. All rights reserved.
 
 *******************************************************************************
 """
@@ -33,8 +33,6 @@ def insert_psp_directory():
     build_output = os.environ['BUILD_OUTPUT']
     custom_apcb_path = os.environ['CUSTOM_APCB_PATH']
     python_home = os.environ['PYTHON_HOME'].strip('"').strip("'")
-    simnow = os.environ['SIMNOW_SUPPORT'].lower()
-    emulation = os.environ['EMULATION'].lower()
 
     if sys.platform == "linux":
         python_exe = "python3"
@@ -62,7 +60,7 @@ def insert_psp_directory():
         )
     bios_image_xml = os.path.join(
         platform_dir,
-        'PspData.xml'
+        'PspData{}.xml'.format(soc_sku.lower().capitalize())
     )
     platform_binaries = os.path.join(
         platform_common_dir,

@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
@@ -9,7 +9,6 @@
 #include <Library/TimerLib.h>
 #include <Library/PciLib.h>
 #include <Protocol/SpiSmmHc.h>
-#include <FchRegistersCommon.h>
 #include "AmdSpiHc.h"
 #include "AmdSpiHcInternal.h"
 
