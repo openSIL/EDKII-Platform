@@ -1,22 +1,20 @@
 #;*****************************************************************************
 #;
-#; Copyright (C) 2008-2023 Advanced Micro Devices, Inc. All rights reserved.
+#; Copyright (C) 2008-2024 Advanced Micro Devices, Inc. All rights reserved.
 #;
 #;******************************************************************************
 [Defines]
   INF_VERSION                    = 0x00010006
-  BASE_NAME                      = GenoaPspRomArmorAllowlistLib
+  BASE_NAME                      = GenoaPspRomArmorAllowListLib
   FILE_GUID                      = 308DAB0B-7FD1-4DAA-AB0E-D6A251DDC13F
   MODULE_TYPE                    = DXE_SMM_DRIVER
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = PlatformPspRomArmorAllowlistLib
+  LIBRARY_CLASS                  = PlatformPspRomArmorAllowListLib
 
 [Sources]
-  PspRomArmorAllowlistLib.c
+  PspRomArmorAllowListLib.c
 
 [Packages]
-  AgesaModulePkg/AgesaCommonModulePkg.dec
-  AgesaPkg/AgesaPkg.dec
   MdePkg/MdePkg.dec
   AmdCommonPkg/AmdCommonPkg.dec
   AmdPspFeaturePkg/AmdPspFeaturePkg.dec

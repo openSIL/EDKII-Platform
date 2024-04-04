@@ -1,24 +1,24 @@
 /*****************************************************************************
  *
- * Copyright (C) 2008-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2008-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *******************************************************************************
  */
 /**
  * @file
  *
- * Platform ROM Armor Allowlist table
+ * Platform ROM Armor AllowList table
  *
  */
 
 #include <Library/DebugLib.h>
 #include <Library/AmdPspRomArmorLib.h>
-#include <Library/PlatformPspRomArmorAllowlistLib.h>
+#include <Library/PlatformPspRomArmorAllowListLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/PcdLib.h>
 
-SPI_ALLOW_LIST gRomArmorAllowlist = {
+SPI_ALLOW_LIST gRomArmorAllowList = {
   9,    // AllowedCmdCount
   1,    // AllowedRegionCount
   {
@@ -78,28 +78,28 @@ SPI_ALLOW_LIST gRomArmorAllowlist = {
 
 /*----------------------------------------------------------------------------------------*/
 /*
- *  Return allocated and filled AMD PSP ROM Armor Allow list Table
+ *  Return allocated and filled AMD PSP ROM Armor allow list Table
  *
  *
- * @param[in]  PlatformSpiAllowlist   Pointer to allow list table
+ * @param[in]  PlatformSpiAllowList   Pointer to allow list table
  *
  * @return    EFI_SUCCESS
  * @return    EFI_OUT_OF_RESOURCES      Buffer to return couldn't be allocated
  */
 EFI_STATUS
 EFIAPI
-GetPspRomArmorAllowlist (
-  IN       SPI_ALLOW_LIST     **PlatformSpiAllowlist
+GetPspRomArmorAllowList (
+  IN       SPI_ALLOW_LIST     **PlatformSpiAllowList
   )
 {
-  SPI_ALLOW_LIST    *SpiAllowlist;
+  SPI_ALLOW_LIST    *SpiAllowList;
 
-  SpiAllowlist = AllocateZeroPool (sizeof (SPI_ALLOW_LIST));
-  *PlatformSpiAllowlist = SpiAllowlist;
-  if (SpiAllowlist == NULL) {
+  SpiAllowList = AllocateZeroPool (sizeof (SPI_ALLOW_LIST));
+  *PlatformSpiAllowList = SpiAllowList;
+  if (SpiAllowList == NULL) {
     return EFI_OUT_OF_RESOURCES;
   }
-  CopyMem (SpiAllowlist, &gRomArmorAllowlist, sizeof (SPI_ALLOW_LIST));
+  CopyMem (SpiAllowList, &gRomArmorAllowList, sizeof (SPI_ALLOW_LIST));
 
   return EFI_SUCCESS;
 }

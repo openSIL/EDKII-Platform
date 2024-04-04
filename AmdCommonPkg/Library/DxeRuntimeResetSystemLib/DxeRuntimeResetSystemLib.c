@@ -1,6 +1,6 @@
 #/*****************************************************************************
 # *
-# * Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
+# * Copyright (C) 2021-2024 Advanced Micro Devices, Inc. All rights reserved.
 # *
 # *****************************************************************************/
 
@@ -18,12 +18,7 @@ ReadPmio8 (
 
   Value8 = 0;
 
-  LibAmdMemRead (
-    AccessWidth8,
-    (UINT64)(ACPI_MMIO_BASE + PMIO_BASE + (UINT64)Index),
-    &Value8,
-    NULL
-    );
+  Value8 = MmioRead8 ((UINT64)(ACPI_MMIO_BASE + PMIO_BASE + (UINT64)Index));
 
   return Value8;
 }
@@ -35,12 +30,9 @@ WritePmio8 (
   IN       UINT8        Value
 )
 {
-  LibAmdMemWrite (
-    AccessWidth8,
+  MmioWrite8 (
     (UINT64)(ACPI_MMIO_BASE + PMIO_BASE + (UINT64)Index),
-    &Value,
-    NULL
-    );
+    Value);
 }
 
 
@@ -49,16 +41,11 @@ ReadPmio16 (
   IN       UINT8        Index
   )
 {
-  UINT8 Value16;
+  UINT16 Value16;
 
   Value16 = 0;
 
-  LibAmdMemRead (
-    AccessWidth16,
-    (UINT64)(ACPI_MMIO_BASE + PMIO_BASE + (UINT64)Index),
-    &Value16,
-    NULL
-    );
+  Value16= MmioRead16 ((UINT64)(ACPI_MMIO_BASE + PMIO_BASE + (UINT64)Index));
 
   return Value16;
 }
@@ -70,11 +57,9 @@ WritePmio16 (
   IN       UINT16       Value
   )
 {
-  LibAmdMemWrite (
-    AccessWidth16,
+  MmioWrite16 (
     (UINT64)(ACPI_MMIO_BASE + PMIO_BASE + (UINT64)Index),
-    &Value,
-    NULL
+    Value
     );
 }
 
@@ -101,12 +86,12 @@ SpecificWarmResetSystem (
   PwrRsrCfg = PwrRsrCfg & 0xFD; //clear ToggleAllPwrGoodOnCf9
   WritePmio8 (0x10, PwrRsrCfg);
 
-  IoWrite8 (FCH_IOMAP_REGCF9, InitialData);
-  IoWrite8 (FCH_IOMAP_REGCF9, OutputData);
+  IoWrite8 (FCH_PCIRST_BASE_IO, InitialData);
+  IoWrite8 (FCH_PCIRST_BASE_IO, OutputData);
   //
   // Given we should have reset getting here would be bad
   //
-  FCH_DEADLOOP ();
+  CpuDeadLoop ();
 }
 
 /**
@@ -130,13 +115,13 @@ ResetCold (
   PwrRsrCfg = PwrRsrCfg | BIT1; //set ToggleAllPwrGoodOnCf9
   WritePmio8 (0x10, PwrRsrCfg);
   if (PcdGetBool (PcdFchFullHardReset)) {
-    IoWrite8 (FCH_IOMAP_REGCF9, FULLSTARTSTATE);
-    IoWrite8 (FCH_IOMAP_REGCF9, FULLRESET);
+    IoWrite8 (FCH_PCIRST_BASE_IO, FULLSTARTSTATE);
+    IoWrite8 (FCH_PCIRST_BASE_IO, FULLRESET);
   } else {
-    IoWrite8 (FCH_IOMAP_REGCF9, HARDSTARTSTATE);
-    IoWrite8 (FCH_IOMAP_REGCF9, HARDRESET);
+    IoWrite8 (FCH_PCIRST_BASE_IO, HARDSTARTSTATE);
+    IoWrite8 (FCH_PCIRST_BASE_IO, HARDRESET);
   }
-  FCH_DEADLOOP ();
+  CpuDeadLoop ();
 }
 
 /**
@@ -157,9 +142,9 @@ ResetWarm (
   PwrRsrCfg = ReadPmio8 (0x10);
   PwrRsrCfg = PwrRsrCfg & 0xFD; //clear ToggleAllPwrGoodOnCf9
   WritePmio8 (0x10, PwrRsrCfg);
-  IoWrite8 (FCH_IOMAP_REGCF9, HARDSTARTSTATE);
-  IoWrite8 (FCH_IOMAP_REGCF9, HARDRESET);
-  FCH_DEADLOOP ();
+  IoWrite8 (FCH_PCIRST_BASE_IO, HARDSTARTSTATE);
+  IoWrite8 (FCH_PCIRST_BASE_IO, HARDRESET);
+  CpuDeadLoop ();
 
 }
 
@@ -199,7 +184,7 @@ ResetShutdown (
   PmCntl  = IoRead16 (AcpiPm1CntBase);
   PmCntl  = (PmCntl & ~SLP_TYPE) | SUS_S5 | SLP_EN;
   IoWrite16 (AcpiPm1CntBase, PmCntl);
-  FCH_DEADLOOP ();
+  CpuDeadLoop ();
 }
 
 /**
@@ -233,9 +218,9 @@ ResetPlatformSpecific (
       }
     }
   }
-  IoWrite8 (FCH_IOMAP_REGCF9, HARDSTARTSTATE);
-  IoWrite8 (FCH_IOMAP_REGCF9, HARDRESET);
-  FCH_DEADLOOP ();
+  IoWrite8 (FCH_PCIRST_BASE_IO, HARDSTARTSTATE);
+  IoWrite8 (FCH_PCIRST_BASE_IO, HARDRESET);
+  CpuDeadLoop ();
 }
 
 /**
@@ -296,5 +281,5 @@ ResetSystem (
   //
   // Given we should have reset getting here would be bad
   //
-  FCH_DEADLOOP ();
+  CpuDeadLoop ();
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *******************************************************************************
  **/
@@ -24,10 +24,12 @@
 #ifndef _TSC_TIMER_LIB_INTERNAL_H_
 #define _TSC_TIMER_LIB_INTERNAL_H_
 
+#include <SilCommon.h>
 #include <Library/TimerLib.h>
 #include <Library/BaseLib.h>
 #include <Library/IoLib.h>
 #include <Library/PcdLib.h>
+#include <FCH/Common/FchCore/FchHwAcpi/FchHwAcpiReg.h>
 
 /**  Get TSC frequency.
 

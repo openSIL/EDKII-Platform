@@ -1,0 +1,32 @@
+#
+### @file
+# Component information file for Pre-defined Data Fabric resources module.
+# Copyright (C) 2023-2024 Advanced Micro Devices, Inc. All rights reserved.
+#
+
+[Defines]
+  INF_VERSION                    = 1.29
+  BASE_NAME                      = AmdPlatformPei
+  FILE_GUID                      = CC4436FF-8AE2-4C20-B058-45E51BDA83D0
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = AmdPlatformPeiInit
+
+[Sources]
+  AmdPlatformPei.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  BaseLib
+  PcdLib
+  DebugLib
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseSize
+
+[Depex]
+  TRUE

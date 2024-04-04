@@ -1,6 +1,6 @@
 // /*****************************************************************************
 //  *
-//  * Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+//  * Copyright (C) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
 //  *
 //  *****************************************************************************/
 
@@ -31,15 +31,15 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 
 // 8259 Hardware definitions
 
-#define PROTECTED_MODE_BASE_VECTOR_MASTER                 0x68
-#define PROTECTED_MODE_BASE_VECTOR_SLAVE                  0x70
+#define PROTECTED_MODE_BASE_VECTOR_PRIMARY                    0x68
+#define PROTECTED_MODE_BASE_VECTOR_SECONDARY                  0x70
 
-#define LEGACY_8259_CONTROL_REGISTER_MASTER               0x20
-#define LEGACY_8259_MASK_REGISTER_MASTER                  0x21
-#define LEGACY_8259_CONTROL_REGISTER_SLAVE                0xA0
-#define LEGACY_8259_MASK_REGISTER_SLAVE                   0xA1
-#define LEGACY_8259_EDGE_LEVEL_TRIGGERED_REGISTER_MASTER  0x4D0
-#define LEGACY_8259_EDGE_LEVEL_TRIGGERED_REGISTER_SLAVE   0x4D1
+#define LEGACY_8259_CONTROL_REGISTER_PRIMARY                  0x20
+#define LEGACY_8259_MASK_REGISTER_PRIMARY                     0x21
+#define LEGACY_8259_CONTROL_REGISTER_SECONDARY                0xA0
+#define LEGACY_8259_MASK_REGISTER_SECONDARY                   0xA1
+#define LEGACY_8259_EDGE_LEVEL_TRIGGERED_REGISTER_PRIMARY     0x4D0
+#define LEGACY_8259_EDGE_LEVEL_TRIGGERED_REGISTER_SECONDARY   0x4D1
 
 #define LEGACY_8259_EOI                                   0x20
 

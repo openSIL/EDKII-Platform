@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
@@ -27,7 +27,7 @@ extern CHAR16  mAmdSpiHcNvDataVar[];
 
 typedef struct _AMD_SPI_HC_NV_DATA {
   UINT8 RomArmorEnable;
-  UINT8 AllowlistEnable;
+  UINT8 AllowListEnable;
 } AMD_SPI_HC_NV_DATA;
 
 #pragma pack()

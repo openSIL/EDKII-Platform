@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
@@ -12,18 +12,17 @@
 #include <Library/BaseMemoryLib.h>
 #include <Library/SmmServicesTableLib.h>
 #include <Library/PciLib.h>
-#include <Library/PlatformPspRomArmorAllowlistLib.h>
 #include <Protocol/SpiSmmHc.h>
 #include <Protocol/SpiHcAdditional.h>
 #include <Protocol/AmdSpiSmmHcState.h>
 #include <Protocol/MmReadyToLock.h>
 #include <Protocol/SmmVariable.h>
-#include <FchRegistersCommon.h>
 #include "AmdSpiHc.h"
 #include "AmdSpiHcInternal.h"
 #include "AmdSpiHcInstance.h"
 #include "AmdSpiHcSmmState.h"
 #include "AmdSpiHcNvData.h"
+#include <Fch/FchIsaReg.h>
 
 EFI_GUID mAmdSpiHcFormSetGuid = AMD_SPI_HC_FORMSET_GUID;
 CHAR16  mAmdSpiHcNvDataVar[] = AMD_SPI_HC_NV_DATA_VARIABLE;
@@ -48,7 +47,6 @@ AmdSpiHcEventNotify (
   SPI_HOST_CONTROLLER_INSTANCE  *Instance;
   EFI_SMM_VARIABLE_PROTOCOL     *SmmVariable;
   EFI_SPI_HC_PROTOCOL           *SpiHc;
-  SPI_ALLOW_LIST                *SpiAllowlist;
   AMD_SPI_HC_NV_DATA            AmdSpiHcNvData;
   UINTN                         VariableSize;
 
@@ -78,32 +76,6 @@ AmdSpiHcEventNotify (
                     &VariableSize,
                     &AmdSpiHcNvData
                     );
-  }
-  if (!EFI_ERROR (Status) && AmdSpiHcNvData.RomArmorEnable == 1) {
-    // Call PSP MailBox to change to PSP SPI mode
-    // Pass address of buffer found in Instance.
-
-    Status = PspEnterSmmOnlyMode (&Instance->SpiCommunicationBuffer);
-    if (!EFI_ERROR (Status)) {
-      Instance->PspMailboxSpiMode = TRUE;
-    } else {
-      return EFI_DEVICE_ERROR;
-    }
-    if (AmdSpiHcNvData.AllowlistEnable == 1) {
-      // Retrieve allocated Allowlist table
-      Status = GetPspRomArmorAllowlist (&SpiAllowlist);
-      if (EFI_ERROR (Status)) {
-        if (SpiAllowlist != NULL) {
-          FreePool (SpiAllowlist);
-        }
-        return Status;
-      }
-      // Send Allowlist to PSP
-      Status = PspEnforceAllowlist (SpiAllowlist);
-      if (SpiAllowlist != NULL) {
-        FreePool (SpiAllowlist);
-      }
-    }
   }
 
   return Status;

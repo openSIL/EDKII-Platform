@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
@@ -10,6 +10,7 @@
 #include <Uefi/UefiBaseType.h>
 #include "AmdSpiHc.h"
 #include "AmdSpiHcInstance.h"
+#include <Fch/FchIsaReg.h>
 
 #define FCH_LPC_DMA_SPI_BUSY  BIT0
 

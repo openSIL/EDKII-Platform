@@ -1,11 +1,11 @@
 /******************************************************************************
- * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *
  ***************************************************************************/
 
-#ifndef AMD_SPI_HC_CHIP_SELECT_PARAMETEGENOA_H_
-#define AMD_SPI_HC_CHIP_SELECT_PARAMETEGENOA_H_
+#ifndef AMD_SPI_HC_CHIP_SELECT_PARAMETERS_H_
+#define AMD_SPI_HC_CHIP_SELECT_PARAMETERS_H_
 
 #include <Base.h>
 
@@ -19,4 +19,4 @@ typedef struct _CHIP_SELECT_PARAMETERS {
 CONST CHIP_SELECT_PARAMETERS ChipSelect1 = { (UINT8)~((UINT8)0x03), 0x0 }; // SPI_CS1_L
 CONST CHIP_SELECT_PARAMETERS ChipSelect2 = { (UINT8)~((UINT8)0x03), 0x1 }; // SPI_CS1_L
 
-#endif  // AMD_SPI_HC_CHIP_SELECT_PARAMETEGENOA_H_
+#endif  // AMD_SPI_HC_CHIP_SELECT_PARAMETERS_H_

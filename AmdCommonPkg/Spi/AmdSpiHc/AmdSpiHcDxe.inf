@@ -1,6 +1,6 @@
 #/*****************************************************************************
 # *
-# * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+# * Copyright (C) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 # *
 # *****************************************************************************/
 
@@ -16,9 +16,9 @@
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
-  AgesaModulePkg/AgesaCommonModulePkg.dec
-  AgesaPkg/AgesaPkg.dec
   AmdCommonPkg/AmdCommonPkg.dec
+  AgesaPkg/AgesaPublicPkg.dec
+  AmdOpenSilPkg/opensil-uefi-interface/AmdOpenSilPkg.dec
 
 [LibraryClasses]
   UefiDriverEntryPoint
@@ -30,8 +30,6 @@
   PcdLib
   TimerLib
   DebugLib
-  UefiLib
-  AmdPspRomArmorLib
   BaseMemoryLib
   HiiLib
   BaseLib

@@ -1,6 +1,6 @@
 """
 *******************************************************************************
- Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
+ Copyright (C) 2021-2024 Advanced Micro Devices, Inc. All rights reserved.
 
 *******************************************************************************
 """
@@ -14,7 +14,6 @@ sys.path.insert(0, search_path)
 
 # Import from platfrom selected above
 from projectpostbuild import projectpostbuild
-from apcb import build_apcb
 from pspdirectory import insert_psp_directory
 from call_bios_tar import tar_bios_image
 from build_sanity_check import build_sanity_check
@@ -26,8 +25,6 @@ def postbuild():
         sys.version_info.micro))
     # Execute first in postbuild
     projectpostbuild()
-    # Execute APCB Build
-    build_apcb()
     # Execute PSP insert after APCB
     insert_psp_directory()
     # tar the BIOS FD image

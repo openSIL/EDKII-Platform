@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
@@ -8,7 +8,6 @@
 #include <Library/IoLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Protocol/SpiHc.h>
-#include <FchRegistersCommon.h>
 #include <Spi/AmdSpiHcChipSelectParameters.h>
 #include "AmdSpiHc.h"
 #include "AmdSpiHcInstance.h"
@@ -289,7 +288,6 @@ Transaction (
     Instance->SpiCommunicationBuffer.CommandCount = 1;
     Instance->SpiCommunicationBuffer.SpiCommunicationResult.Value = 0x0;
     Instance->SpiCommunicationBuffer.ReadyToRun = TRUE;
-    Status = PspExecuteSpiCommand ();
     if (!EFI_ERROR (Status)) {
       if (Instance->SpiCommunicationBuffer.SpiCommunicationResult.Value == 0x1000) {
         Status = EFI_INVALID_PARAMETER;

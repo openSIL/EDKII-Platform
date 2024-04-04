@@ -1,6 +1,6 @@
 // /*****************************************************************************
 // *
-// * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+// * Copyright (C) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 // *
 // *****************************************************************************/
 
@@ -42,7 +42,7 @@ formset
     endoneof;
 
     suppressif ideqval AMD_SPI_HC_NV_DATA.RomArmorEnable == 0;
-      oneof varid   = AMD_SPI_HC_NV_DATA.AllowlistEnable,
+      oneof varid   = AMD_SPI_HC_NV_DATA.AllowListEnable,
         questionid  = KEY_ROM_ARMOR_ALLOWLIST_ENABLE,
         prompt      = STRING_TOKEN(STR_AMD_ROM_ARMOR_ALLOWLIST_PROMPT),
         help        = STRING_TOKEN(STR_AMD_ROM_ARMOR_ALLOWLIST_HELP),

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *******************************************************************************
  **/
@@ -31,10 +31,12 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 #include <Library/BaseMemoryLib.h>
 #include <Library/HobLib.h>
 #include <Library/MtrrLib.h>
-#include <AGESA.h>
-#include <GnbRegistersGenoa/Core_X86_Msr.h>
 #include <Library/SecBoardInitLib.h>
 #include <Library/TestPointCheckLib.h>
+#include <Register/Amd/Msr.h>
+
+#define MSR_SYS_CFG                           0xC0010010ul
+#define SYS_CFG_MtrrFixDramModEn_OFFSET       19
 
 VOID
 AsmSecPlatformDisableTemporaryMemory(
@@ -96,20 +98,20 @@ PlatformSecLibStartup (
   //
   ProcessLibraryConstructorList ();
 
-  AsmMsrBitFieldOr64 (SYS_CFG, SYS_CFG_MtrrFixDramModEn_OFFSET,
+  AsmMsrBitFieldOr64 (MSR_SYS_CFG, SYS_CFG_MtrrFixDramModEn_OFFSET,
       SYS_CFG_MtrrFixDramModEn_OFFSET, 0x1);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX64k_00000, 0x1E1E1E1E1E1E1E1E);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX16k_80000, 0x1E1E1E1E1E1E1E1E);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX16k_A0000, 0x1E1E1E1E1E1E1E1E);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX4k_C0000, 0x1E1E1E1E1E1E1E1E);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX4k_C8000, 0x1E1E1E1E1E1E1E1E);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX4k_D0000, 0x1E1E1E1E1E1E1E1E);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX4k_D8000, 0x1E1E1E1E1E1E1E1E);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX4k_E0000, 0x1E1E1E1E1E1E1E1E);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX4k_E8000, 0x1E1E1E1E1E1E1E1E);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX4k_F0000, 0x1E1E1E1E1E1E1E1E);
-  AsmWriteMsr64 (AMD_AP_MTRR_FIX4k_F8000, 0x1E1E1E1E1E1E1E1E);
-  AsmMsrBitFieldAnd64 (SYS_CFG, SYS_CFG_MtrrFixDramModEn_OFFSET,
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX64K_00000, 0x1E1E1E1E1E1E1E1E);
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX16K_80000, 0x1E1E1E1E1E1E1E1E);
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX16K_A0000, 0x1E1E1E1E1E1E1E1E);
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX4K_C0000, 0x1E1E1E1E1E1E1E1E);
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX4K_C8000, 0x1E1E1E1E1E1E1E1E);
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX4K_D0000, 0x1E1E1E1E1E1E1E1E);
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX4K_D8000, 0x1E1E1E1E1E1E1E1E);
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX4K_E0000, 0x1E1E1E1E1E1E1E1E);
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX4K_E8000, 0x1E1E1E1E1E1E1E1E);
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX4K_F0000, 0x1E1E1E1E1E1E1E1E);
+  AsmWriteMsr64 (MSR_IA32_MTRR_FIX4K_F8000, 0x1E1E1E1E1E1E1E1E);
+  AsmMsrBitFieldAnd64 (MSR_SYS_CFG, SYS_CFG_MtrrFixDramModEn_OFFSET,
       SYS_CFG_MtrrFixDramModEn_OFFSET, 0x0);
 
   //

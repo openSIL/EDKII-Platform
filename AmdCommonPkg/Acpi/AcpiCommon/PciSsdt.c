@@ -1,21 +1,18 @@
 /*****************************************************************************
  *
- * Copyright (C) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
 #include "PciSsdt.h"
-#include <AMD.h>
 #include <Library/IoLib.h>
 #include <Protocol/AmdPciResourcesProtocol.h>
-#include <Protocol/AmdCxlServicesProtocol.h>
-
 
 AMD_PCI_RESOURCES_PROTOCOL      *mAmdPciResources;
 EFI_HANDLE                      mDriverHandle;
 
 /**
-  Create sorted Root Bridge instances from NBIO resources.
+  Create sorted Root Bridge instances from AGESA NBIO resources.
 
   Does not include the Root Bridge resources
 
@@ -592,48 +589,19 @@ InternalInsertCxlRootBridge (
   EFI_STATUS                        Status;
   PCI_ROOT_BRIDGE_OBJECT_INSTANCE   *RootBridge;
   CHAR8                             Identifier [MAX_LOCAL_STRING_SIZE];
-  AMD_NBIO_CXL_SERVICES_PROTOCOL    *AmdNbioCxlServicesProtocol;
   UINT8                             Index;
-  AMD_CXL_PORT_INFO_STRUCT          *NbioPortInfo;
   UINTN                             CxlCount;
 
+  Status     = EFI_SUCCESS;
+  CxlCount   = 0;
 
-
-  AmdNbioCxlServicesProtocol = NULL;
-  Status = EFI_SUCCESS;
-  CxlCount = 0;
-
-
-  Status = gBS->LocateProtocol (
-                  &gAmdNbioCxlServicesProtocolGuid,
-                  NULL,
-                  (VOID **)&AmdNbioCxlServicesProtocol
-                  );
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_INFO, "%a: Failed to locate AmdNbioCxlServices Protocol: %r\n", __FUNCTION__, Status));
-    Status = EFI_SUCCESS;
-    return Status;
-  }
-  NbioPortInfo = AllocateZeroPool (sizeof (AMD_CXL_PORT_INFO_STRUCT));
   RootBridge = AllocateZeroPool (sizeof (PCI_ROOT_BRIDGE_OBJECT_INSTANCE));
 
   //
   // Populate the data structure for the CXL devices in the system to add to
   // the ACPI Table
   //
-  CxlCount = AmdNbioCxlServicesProtocol->CxlCount;
   for (Index = 0; Index < CxlCount; Index++) {
-    Status = AmdNbioCxlServicesProtocol->CxlGetRootPortInformation (
-                                           AmdNbioCxlServicesProtocol,
-                                           Index,
-                                           NbioPortInfo
-                                           );
-    if (Status != EFI_SUCCESS) {
-      break;
-    }
-
-    RootBridge->Object->BaseBusNumber = (UINTN )NbioPortInfo->EndPointBDF.Address.Bus;
-
     if (Index < 0x10) {
       AsciiSPrint (Identifier, MAX_LOCAL_STRING_SIZE, "CXL%01X", Index);
     } else {
@@ -662,8 +630,6 @@ InternalInsertCxlRootBridge (
 
       // Name (_ADR, <address>)
       Status |= AmlName (AmlStart, "_ADR", ListHead);
-        Status |= AmlOPDataInteger ((NbioPortInfo->EndPointBDF.Address.Device << 16) +
-                    NbioPortInfo->EndPointBDF.Address.Function, ListHead);
       Status |= AmlName (AmlClose, "_ADR", ListHead);
 
       // Name (_UID, <CXL number>)
@@ -673,7 +639,6 @@ InternalInsertCxlRootBridge (
 
       // Name (_BBN, <base bus number>)
       Status |= AmlName (AmlStart, "_BBN", ListHead);
-        Status |= AmlOPDataInteger (NbioPortInfo->EndPointBDF.Address.Bus, ListHead);
       Status |= AmlName (AmlClose, "_BBN", ListHead);
 
       // Name (_SEG, 0)
@@ -684,7 +649,6 @@ InternalInsertCxlRootBridge (
 
       // Name (_PXM, <RootBridge->SocketId>)
       Status |= AmlName (AmlStart, "_PXM", ListHead);
-        Status |= AmlOPDataInteger (NbioPortInfo->SocketID, ListHead);
       Status |= AmlName (AmlClose, "_PXM", ListHead);
 
       // Name (_CRS, <CRS Resource Template>)
@@ -710,7 +674,6 @@ InternalInsertCxlRootBridge (
   }
 
   FreePool (RootBridge);
-  FreePool (NbioPortInfo);
 
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_INFO, "%a: Failed with Status: %r, Not Critical return SUCCESS\n", __FUNCTION__, Status));

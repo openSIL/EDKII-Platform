@@ -1,11 +1,10 @@
 /*****************************************************************************
  *
- * Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  *****************************************************************************/
 
 #include <Base.h>
-#include <FchRegistersCommon.h>
 #include <Library/DebugLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/IoLib.h>
