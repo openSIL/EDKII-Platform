@@ -36,7 +36,7 @@
   # Platform On/Off features are defined here
   #
   DEFINE SOURCE_DEBUG_ENABLE   = FALSE
-  DEFINE DEBUG_DISPATCH_ENABLE = FALSE
+  DEFINE DEBUG_DISPATCH_ENABLE = TRUE
   DEFINE DISABLE_SMT           = FALSE
 
   #
@@ -128,7 +128,7 @@
   # Stage 5 - boot to OS with security boot enabled
   # Stage 6 - boot with advanced features enabled
   #
-  gMinPlatformPkgTokenSpaceGuid.PcdBootStage|6
+  gMinPlatformPkgTokenSpaceGuid.PcdBootStage|4
 
 [PcdsFeatureFlag]
   ######################################
@@ -143,6 +143,7 @@
   gMinPlatformPkgTokenSpaceGuid.PcdBootToShellOnly|FALSE
   gMinPlatformPkgTokenSpaceGuid.PcdSerialTerminalEnable|TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdPciBusHotplugDeviceSupport|FALSE
+  gNetworkFeaturePkgTokenSpaceGuid.PcdNetworkFeatureEnable|FALSE
 
   !if gMinPlatformPkgTokenSpaceGuid.PcdBootStage >= 1
     gMinPlatformPkgTokenSpaceGuid.PcdStopAfterDebugInit|TRUE
@@ -165,7 +166,6 @@
   !if gMinPlatformPkgTokenSpaceGuid.PcdBootStage >= 5
     # gMinPlatformPkgTokenSpaceGuid.PcdUefiSecureBootEnable|TRUE
     gMinPlatformPkgTokenSpaceGuid.PcdTpm2Enable|TRUE
-    gNetworkFeaturePkgTokenSpaceGuid.PcdNetworkFeatureEnable|TRUE
     gEfiMdeModulePkgTokenSpaceGuid.PcdPciBusHotplugDeviceSupport|TRUE
   !endif
 
@@ -291,9 +291,9 @@
   # DEBUG_VERBOSE   0x00400000  // Detailed debug messages that may significantly impact boot performance
   # DEBUG_ERROR     0x80000000  // Error
 
-  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x27
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x3F
   !if $(DEBUG_DISPATCH_ENABLE)
-    gEfiMdePkgTokenSpaceGuid.PcdFixedDebugPrintErrorLevel|0x800000CF
+    gEfiMdePkgTokenSpaceGuid.PcdFixedDebugPrintErrorLevel|0x800805CF
   !else
     gEfiMdePkgTokenSpaceGuid.PcdFixedDebugPrintErrorLevel|0x8000004F
   !endif
@@ -892,7 +892,7 @@
   PlatformBootManagerLib|MinPlatformPkg/Bds/Library/DxePlatformBootManagerLib/DxePlatformBootManagerLib.inf
   LocalApicLib|AmdCommonPkg/Library/BaseXApicX2ApicLib/BaseXApicX2ApicLib.inf
   PcieResourcesLib|AgesaModulePkg/Library/PcieResourcesLib/PcieResourcesLib.inf
-  FabricResourceManagerLib|AgesaModulePkg/Library/FabricResourceManagerGenoaLib/FabricResourceManagerLib.inf  
+  FabricResourceManagerLib|AgesaModulePkg/Library/FabricResourceManagerGenoaLib/FabricResourceManagerLib.inf
   IpmiBaseLib|AmdCommonPkg/Ipmi/Library/AmdIpmiLib/AmdIpmiLib.inf
   PciSegmentLib|MdePkg/Library/PciSegmentLibSegmentInfo/BasePciSegmentLibSegmentInfo.inf
 

@@ -14,9 +14,8 @@
 
 [Defines]
   !include $(PLATFORM_NAME)/Include/Fdf/FlashMapInclude.fdf
-  DEFINE AGESA_PEI_INC_FDF = $(PLATFORM_NAME)/Include/AgesaInc/AgesaExt.pei.inc.fdf
-  DEFINE AGESA_DXE_INC_FDF = $(PLATFORM_NAME)/Include/AgesaInc/AgesaExt.dxe.inc.fdf
-#-----------------------------------------------------------
+
+  #-----------------------------------------------------------
 #  End of [Defines] section
 #-----------------------------------------------------------
 
@@ -235,9 +234,14 @@
 
   APRIORI PEI {
     INF  MdeModulePkg/Universal/PCD/Pei/Pcd.inf
-    INF  AgesaPkg/Addendum/PciSegments/PciExpressPciCfg2/PciExpressPciCfg2.inf
+    INF  edk2/MdeModulePkg/Universal/PcatSingleSegmentPciCfg2Pei/PcatSingleSegmentPciCfg2Pei.inf
+    #INF  AgesaPkg/Addendum/PciSegments/PciExpressPciCfg2/PciExpressPciCfg2.inf
     INF  MdeModulePkg/Universal/ReportStatusCodeRouter/Pei/ReportStatusCodeRouterPei.inf
+    INF  UefiCpuPkg/CpuIoPei/CpuIoPei.inf
+    INF  MdeModulePkg/Universal/Variable/Pei/VariablePei.inf
+    INF  MinPlatformPkg/PlatformInit/PlatformInitPei/PlatformInitPreMem.inf
     INF  MdeModulePkg/Universal/StatusCodeHandler/Pei/StatusCodeHandlerPei.inf
+    INF AmdOpenSilPkg/opensil-uefi-interface/Platform/$(SIL_PLATFORM_NAME)-$(SOC_SKU)/Pei/Sil$(SIL_PLATFORM_NAME)Pei.inf
   }
 
   # SEC Core
@@ -256,15 +260,9 @@
   # INF MdeModulePkg/Universal/ResetSystemPei/ResetSystemPei.inf
   INF MdeModulePkg/Universal/CapsulePei/CapsulePei.inf
 
-  # OPENSIL
-  # OPENSIL_OVERRIDE STARTS
   INF AmdOpenSilPkg/opensil-uefi-interface/Platform/$(SIL_PLATFORM_NAME)-$(SOC_SKU)/Pei/Sil$(SIL_PLATFORM_NAME)Pei.inf
-  # OPENSIL_OVERRIDE ENDS
 
-  #
-  # AMD AGCL PEI Includes
-  #
-  !include $(AGESA_PEI_INC_FDF)
+  INF AgesaModulePkg/Mem/AmdMemoryHobInfoPeimGenoa/AmdMemoryHobInfoPeimGenoa.inf
 
 [FV.FvAdvancedPreMemory]
   FvAlignment        = 64
@@ -376,7 +374,7 @@
 
   # AMD AGCL DXE Includes
   #
-  !include $(AGESA_DXE_INC_FDF)
+  #!include $(AGESA_DXE_INC_FDF)
 
   # EDK Core modules
   INF  UefiCpuPkg/CpuDxe/CpuDxe.inf

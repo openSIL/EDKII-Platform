@@ -10,4 +10,4 @@
   #
   # AMD AGESA PEI Includes - External
   #
-  #!include AgesaModulePkg/AgesaSp5RsModulePkg.pei.inc.fdf
+  !include AgesaModulePkg/AgesaSp5GenoaModulePkg.pei.inc.fdf
