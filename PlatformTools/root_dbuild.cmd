@@ -6,7 +6,7 @@
 ::This file is in Platform\PlatformTools\root_dbuild.cmd
 @ECHO OFF
 IF DEFINED PYTHON_HOME (
-  "%PYTHON_HOME%\python.exe" Tools\dbuild\dbuild.py %*
+  "%PYTHON_HOME%\python.exe" Platform\PlatformTools\Tools\dbuild\dbuild.py %*
 ) ELSE (
   Tools\dbuild\dbuild.py %*
 )
