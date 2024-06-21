@@ -50,7 +50,7 @@ SpiNorFlashEntry (
   Status = gBS->LocateProtocol (
                   &gAmdJedecSpiDxeIoProtocolGuid,
                   NULL,
-                  &Instance->SpiIo
+                  (VOID **)&Instance->SpiIo
                   );
   ASSERT_EFI_ERROR (Status);
   if (EFI_ERROR (Status) ||

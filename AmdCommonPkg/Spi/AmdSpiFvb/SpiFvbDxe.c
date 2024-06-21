@@ -54,7 +54,7 @@ SpiFvbDxeEntryPoint (
   Status = gBS->LocateProtocol (
     &gEfiSpiNorFlashProtocolGuid,
     NULL,
-    &mSpiNorFlashProtocol
+    (VOID **)&mSpiNorFlashProtocol
     );
 
   if (EFI_ERROR (Status)) {
