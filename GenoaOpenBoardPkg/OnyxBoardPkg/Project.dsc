@@ -1323,7 +1323,7 @@ SmmCorePlatformHookLib|AmdCommonPkg/Library/SmmCorePlatformHookLib/SmmCorePlatfo
   !if gMinPlatformPkgTokenSpaceGuid.PcdTpm2Enable == TRUE
     MinPlatformPkg/Tcg/Tcg2PlatformDxe/Tcg2PlatformDxe.inf {
       <LibraryClasses>
-        TpmPlatformHierarchyLib|MinPlatformPkg/Tcg/Library/PeiDxeTpmPlatformHierarchyLib/PeiDxeTpmPlatformHierarchyLib.inf
+        TpmPlatformHierarchyLib|SecurityPkg/Library/PeiDxeTpmPlatformHierarchyLib/PeiDxeTpmPlatformHierarchyLib.inf
     }
     UefiCpuPkg/MicrocodeMeasurementDxe/MicrocodeMeasurementDxe.inf
     MdeModulePkg/Universal/SmbiosMeasurementDxe/SmbiosMeasurementDxe.inf
