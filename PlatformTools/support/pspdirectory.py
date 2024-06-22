@@ -55,7 +55,7 @@ def insert_psp_directory():
     # Paths of files to copy
     firmware_dir = os.path.join(
         workspace,
-        'AGESA/AgesaModulePkg/Firmwares',
+        'AGCL-R/AgesaModulePkg/Firmwares',
         soc_sku
         )
     bios_image_xml = os.path.join(

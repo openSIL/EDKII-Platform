@@ -157,7 +157,7 @@ def get_default_packages_path(build_attributes):
     Example:
         [
           "Platform",
-          "AGESA",
+          "AGCL-R",
           "edk2",
           "edk2-platforms/Platform/Intel",
           "edk2-platforms/Features/Intel"

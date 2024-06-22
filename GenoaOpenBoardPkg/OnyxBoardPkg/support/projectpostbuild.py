@@ -20,7 +20,7 @@ def projectpostbuild():
 
     os.environ['APCB_TOOL_TEMP_PATH'] = os.path.normpath(os.path.join(
         workspace,
-        'AGESA/AgesaPkg/Addendum/Apcb/GenoaSp5Rdimm'
+        'AGCL-R/AgesaPkg/Addendum/Apcb/GenoaSp5Rdimm'
     ))
     os.environ['APCB_MULTI_BOARD_SUPPORT'] = '1'
     os.environ['APCB_DATA_BOARD_DIR_LIST'] = 'GenoaCommon Onyx'

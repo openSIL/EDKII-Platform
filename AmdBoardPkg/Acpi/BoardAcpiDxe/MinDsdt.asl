@@ -52,6 +52,6 @@ DefinitionBlock (
   Name (\_S5, Package(4) {
     0x05, 0x00, 0x00, 0x00 // PM1a_CNT.SLP_TYP = 5, PM1b_CNT.SLP_TYP = 0
   })
-  Include ("../../../../AGESA/AgesaModulePkg/Fch/9004/Fch9004Dxe/Fch9004I2C_I3C.asl")
+  Include ("../../../../AGCL-R/AgesaModulePkg/Fch/9004/Fch9004Dxe/Fch9004I2C_I3C.asl")
 }// End of ASL File
 

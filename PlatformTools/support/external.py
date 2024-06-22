@@ -16,5 +16,5 @@ def external_only():
                     False   - Internal and External build supported
     """
     # Check for a file that will not be available on an external build
-    checkfile = "AGESA/AgesaModulePkg/Library/PspIdsHookLib/Dxe/Internal"
+    checkfile = "AGCL-R/AgesaModulePkg/Library/PspIdsHookLib/Dxe/Internal"
     return not os.path.isdir(checkfile)
