@@ -42,12 +42,21 @@ def insert_psp_directory():
 
     psp_workspace = os.path.join(build_output, 'PSP_DIR')
 
-    build_psp_directory =  os.path.join(
-        workspace,
-        'AGESA/AgesaModulePkg/AMDTools/',
-        'NewPspKit/PspDirectoryTool',
-        'BuildPspDirectory.py'
-        )
+    if 'AMD_AGCL_PATH' in os.environ:
+        build_psp_directory =  os.path.join(
+            os.environ['AMD_AGCL_PATH'],
+            'AgesaModulePkg/AMDTools/'
+            'NewPspKit/PspDirectoryTool',
+            'BuildPspDirectory.py'
+            )
+    else:
+        build_psp_directory =  os.path.join(
+            workspace,
+            'AGCL-R/AgesaModulePkg/AMDTools/',
+            'NewPspKit/PspDirectoryTool',
+            'BuildPspDirectory.py'
+            )
+
     bios_image = os.path.join(build_output, 'FV/PLATFORM.fd')
     output_image = '{}.FD'.format(firmware_version)
     psp_output = os.path.join(workspace, '')

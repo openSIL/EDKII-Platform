@@ -9,14 +9,25 @@ import sys
 from buildsupport import build_module_only
 
 # Make sure python environment knows where to find bios_tar.py
-search_path = os.path.join(
-                os.environ['WORKSPACE'],
-                'Platform',
-                'PlatformTools',
-                'Tools',
-                'bios_tar',
-                ''
-                )
+# Recommend setting an 'AMD_PLATFORM_TOOLS' environment variable.
+if 'AMD_PLATFORM_TOOLS' in os.environ:
+    search_path = os.path.join(
+                    os.environ['WORKSPACE'],
+                    os.environ['AMD_PLATFORM_TOOLS'],
+                    'Tools',
+                    'bios_tar',
+                    ''
+                    )
+
+else:
+    search_path = os.path.join(
+                    os.environ['WORKSPACE'],
+                    'Platform',
+                    'PlatformTools',
+                    'Tools',
+                    'bios_tar',
+                    ''
+                    )
 sys.path.insert(0, search_path)
 
 from bios_tar import to_tar
