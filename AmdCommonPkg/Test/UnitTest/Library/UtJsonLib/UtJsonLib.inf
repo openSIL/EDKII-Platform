@@ -1,0 +1,20 @@
+# Copyright (C) 2021 - 2024 Advanced Micro Devices, Inc. All rights reserved.
+#
+# @file  UtJsonLib.inf
+# @brief
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = UtJsonLib
+  FILE_GUID                      = 9b646b16-f9c5-4670-aa6b-0c019d224a0b
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = UtJsonLib
+
+[Sources]
+  cJSON.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmdCommonPkg/Test/UnitTest/AgesaModuleUtPkg.dec

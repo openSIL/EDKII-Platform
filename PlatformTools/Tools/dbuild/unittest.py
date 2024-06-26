@@ -60,8 +60,10 @@ def add_argument_commands():
 
     # Add parser to build the tests
     unit_parser = arguments.subparsers.add_parser(
-        "unit", add_help=False, help="Build unit test", parents=[parser]
+        "ut", add_help=False, help="Build unit tests for the specified target", parents=[parser]
     )
+
+    unit_parser.add_argument("target", help="Target DSC file to build")
 
     # Specify function to execute
     unit_parser.set_defaults(func=unit_test)
@@ -77,7 +79,7 @@ def set_build_attributes():
     setattr(
         arguments.args,
         "tagname",
-        "VS2017"
+        "VS2019"
     )
 
     setattr(
@@ -103,7 +105,7 @@ def set_build_attributes():
         "platform",
         os.path.join(
             arguments.args.amd_platform_dir,
-            "AmdCommonPkgHostTest.dsc",
+            arguments.args.target,
         )
     )
 
@@ -136,13 +138,17 @@ def set_packages_path():
     except:
         raise
 
-    for index in range(len(path_list)):
-        path_list[index] = os.path.join(arguments.args.workspace, path_list[index])
+    paths = []
+    for path in path_list:
+        _path = path
+        if os.name.lower() == "nt":
+            _path = _path.replace("/", "\\")
+        paths.append(os.path.join(arguments.args.workspace, _path))
 
     setattr(
         arguments.args,
         "packages_path",
-        ";".join(path_list)
+        ";".join(paths)
     )
 
 def set_unit_test_env():
@@ -241,10 +247,10 @@ def unit_test():
     # Make sure build output directory exists
     os.makedirs(arguments.args.build_output, exist_ok=True)
 
-    returncode = execute_edk2_tools_build(unit_test_env)
+    return_code = execute_edk2_tools_build(unit_test_env)
+
+    if return_code != 0:
+        return return_code
 
     # Build unit tests
-    if returncode == 0:
-        execute_unit_test_build(unit_test_env)
-
-    return returncode
+    return execute_unit_test_build(unit_test_env)

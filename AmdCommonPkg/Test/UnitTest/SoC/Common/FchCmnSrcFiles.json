@@ -1,0 +1,11 @@
+[
+  {
+    "Include": []
+  },
+  {
+    "Component": "Example",
+    "CommonFiles": [
+      {"Name": "Platform\\AmdCommonPkg\\Test\\UnitTest\\Source\\Examples\\HelloWorldUt\\HelloWorldUt.c"}
+    ]
+  }
+]
