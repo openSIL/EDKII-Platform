@@ -1,0 +1,17 @@
+[
+  {
+    "Include": []
+  },
+  {
+    "Component": "Examples",
+    "Tests" : [
+      {
+        "Name"       : "HelloWorldUt",
+        "ConfigFile" : "Platform\\AmdCommonPkg\\Test\\UnitTest\\Source\\Examples\\HelloWorldUt\\HelloWorldUt.json",
+        "Iterations" : ["Default"],
+        "Target"     : "Platform\\AmdCommonPkg\\Test\\UnitTest\\Source\\Examples\\HelloWorldUt\\HelloWorldUt.c",
+        "Timeout"    : 15
+      }
+    ]
+  }
+]

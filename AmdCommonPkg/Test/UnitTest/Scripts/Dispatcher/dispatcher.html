@@ -1,0 +1,129 @@
+<html>
+  <%
+    import os
+    bg_color = {
+      'PASSED'  : '#00CC00',
+      'ABORTED' : '#FF3300',
+      'FAILED'  : '#FF3300',
+      'NOT_SET' : '#FF3300',
+      'NA'      : '#D3D3D3',
+    }
+    status_string = {
+      'PASSED'  : 'Passed',
+      'ABORTED' : 'Aborted',
+      'FAILED'  : 'Failed',
+      'NOT_SET' : 'NotSet',
+      'NA'      : 'NA',
+    }
+  %>
+  <head>
+  </head>
+  <body>
+    <script>
+    function openTestDetailsWindow(url) {
+       var myWindow = window.open(url, "TestDetailsWindow", "width=900, height=600, scrollbars=yes");
+    }
+    </script>
+
+    <div style="margin-left: 5%; margin-right: 5%">
+      <br/>
+      <br/>
+      <h3>Test Information</h3>
+      <br/>
+      <br/>
+    </div>
+    <div style="margin-left: 25%; margin-right: 25%">
+      <table border="1" cellspacing="0" width="100%">
+        <thead>
+          <tr bgcolor="#339FFF">
+            <th width="35%">Specification</th>
+            <th width="65%">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td width="25%">Target Platform</td>
+            <td width="75%" style="text-align: center">${platform}</td>
+          </tr>
+          <tr>
+            <td width="25%">Test Completion Time</td>
+            <td width="75%" style="text-align: center">${completion_time}</td>
+          </tr>
+          <tr>
+            <td width="25%">AGESA Head</td>
+            <td width="75%" style="text-align: center">${GitHash["AGESA"]}</td>
+          </tr>
+          <tr>
+            <td width="25%">openSIL Head</td>
+            <td width="75%" style="text-align: center">${GitHash["OpenSIL"]}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div style="margin-left: 5%; margin-right: 5%">
+      <br/>
+      <h3>Test Result</h3>
+      <br/>
+    </div>
+    % for component in components:
+    <%
+    if not component.tests:
+      continue
+    %>
+    <div style="margin-left: 5%; margin-right: 5%">
+      <br/>
+      <h4>${component.name} Suite</h4>
+      <br/>
+      <table border="1" cellspacing="0" width="100%">
+        <tbody>
+          <tr bgcolor="#339FFF" align="center" border="0">
+            <td width="20%"><b>Name</b></td>
+            <td width="20%"><b>Iteration</b></td>
+            <td width="10%"><b>Log</b></td>
+            <td width="10%"><b>Result</b></td>
+            <td width="10%"><b>Coverage (%)</b></td>
+            <td width="20%"><b>Coverage Report</b></td>
+            <td width="10%"><b>Status</b></td>
+          </tr>
+          % for test in component.tests:
+          % for idx, iteration in enumerate(test.iterations):
+          <tr align="center">
+            <td>${test.name}</td>
+            <td>${iteration}</td>
+            <%
+            status   = 'NA'
+            if test.status[idx] is not None:
+              status = test.status[idx]
+            coverage_path = './{}/{}/index.html'.format(test.name, iteration)
+            log_path = "./{}/{}/{}.log".format(test.name, iteration, test.name)
+            if not os.path.isfile (os.path.join(configs["OutPath"], log_path)):
+              log_path = "NA"
+            result_path = "./{}/{}/{}.json".format(test.name, iteration, test.name)
+            if not os.path.isfile (os.path.join(configs["OutPath"], result_path)):
+              result_path = "NA"
+            %>
+            % if log_path == "NA":
+            <td align="center">NA</td>
+            % else:
+            <td align="center"><a onclick="openTestDetailsWindow('${log_path}')" style="cursor:hand;cursor:pointer" href="JavaScript:void(0)">Log</a></td>
+            % endif
+            % if result_path == "NA":
+            <td align="center">NA</td>
+            % else:
+            <td align="center"><a onclick="openTestDetailsWindow('${result_path}')" style="cursor:hand;cursor:pointer" href="JavaScript:void(0)">Result</a></td>
+            % endif
+            <td>${test.coverage[idx]}</td>
+            <td align="center"><a onclick="openTestDetailsWindow('${coverage_path}')" style="cursor:hand;cursor:pointer" href="JavaScript:void(0)">${os.path.basename(test.target_file)}</a></td>
+            <td bgcolor="${bg_color[status]}">${status_string[status]}</td>
+          </tr>
+          % endfor
+          % endfor
+        </tbody>
+      </table>
+    </div>
+    <br/>
+    % endfor
+  </body>
+</html>

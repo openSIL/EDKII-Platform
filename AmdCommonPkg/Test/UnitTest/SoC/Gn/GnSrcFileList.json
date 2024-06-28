@@ -1,0 +1,14 @@
+[
+  {
+    "Platform": "Genoa",
+    "Include": [
+      "Platform\\AmdCommonPkg\\Test\\UnitTest\\SoC\\Common\\FchCmnSrcFiles.json"
+    ]
+  },
+  {
+    "Component": "Example",
+    "CommonFiles": [
+      {"Name": "AmdOpenSilPkg\\opensil-uefi-interface\\UnitTest\\Source\\Xmp\\SilHelloWorldUt\\SilHelloWorldUt.c"}
+    ]
+  }
+]

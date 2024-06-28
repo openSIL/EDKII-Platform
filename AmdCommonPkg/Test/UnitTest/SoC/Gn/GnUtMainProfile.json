@@ -1,0 +1,9 @@
+[
+  {
+    "Platform": "Genoa",
+    "Include": [
+      "Platform\\AmdCommonPkg\\Test\\UnitTest\\SoC\\Examples\\HelloWorldTest.json",
+      "AmdOpenSilPkg\\opensil-uefi-interface\\UnitTest\\SoC\\Genoa\\GnUtMainProfile.json"
+    ]
+  }
+]

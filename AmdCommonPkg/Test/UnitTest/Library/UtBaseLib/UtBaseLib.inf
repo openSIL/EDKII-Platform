@@ -1,0 +1,29 @@
+# Copyright (C) 2021 - 2024 Advanced Micro Devices, Inc. All rights reserved.
+#
+# @file  UtBaseLib.inf
+# @brief
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = UtBaseLib
+  FILE_GUID                      = a26b2f75-0e05-4f59-b51c-095602276a8e
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = UtBaseLib
+
+[Sources]
+  Log.c
+  Log.h
+  UtBaseLib.c
+  #UtBaseIdsPrint.c ranveer
+  UtBaseSilPrint.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  UnitTestFrameworkPkg/UnitTestFrameworkPkg.dec
+  AmdCommonPkg/Test/UnitTest/AgesaModuleUtPkg.dec
+  AgesaModulePkg/AgesaCommonModulePkg.dec
+
+[LibraryClasses]
+  UtJsonLib

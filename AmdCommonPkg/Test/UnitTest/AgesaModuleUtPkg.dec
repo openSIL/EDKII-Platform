@@ -1,0 +1,14 @@
+# Copyright (C) 2021 - 2024 Advanced Micro Devices, Inc. All rights reserved.
+#
+# @file AgesaModuleUtPkg.dec
+#
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = AgesaModuleUtPkg
+  PACKAGE_GUID                   = B92B9A71-1D37-44AA-98DB-DFB0DFD8425F
+  PACKAGE_VERSION                = 0.1
+
+[Includes]
+  Include
+

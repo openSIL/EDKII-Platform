@@ -1,0 +1,25 @@
+# Copyright (C) 2021 - 2024 Advanced Micro Devices, Inc. All rights reserved.
+#
+# @file  HelloWorldUt.inf
+# @brief
+#
+
+
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = HelloWorldUt
+  FILE_GUID      = d5d0eedf-5f40-40ab-b8d3-7e1bcad0f8f8
+  MODULE_TYPE    = HOST_APPLICATION
+  VERSION_STRING = 1.0
+
+[Sources]
+  HelloWorldUt.c
+  HelloWorldUt.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmdCommonPkg/Test/UnitTest/AgesaModuleUtPkg.dec
+  UnitTestFrameworkPkg/UnitTestFrameworkPkg.dec
+
+[LibraryClasses]
+  UtBaseLib

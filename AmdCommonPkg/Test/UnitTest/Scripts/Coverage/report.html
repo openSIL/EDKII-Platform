@@ -1,0 +1,134 @@
+<html>
+  <%
+    import os
+  %>
+  <head>
+  </head>
+  <body>
+    <script>
+    function openTestDetailsWindow(url) {
+       var myWindow = window.open(url, "TestDetailsWindow", "width=900, height=600, scrollbars=yes");
+    }
+    </script>
+
+    <div style="margin-left: 5%; margin-right: 5%">
+      <br/>
+      <br/>
+      <h3>Test Information</h3>
+      <br/>
+      <br/>
+    </div>
+    <div style="margin-left: 25%; margin-right: 25%">
+      <table border="1" cellspacing="0" width="100%">
+        <thead>
+          <tr bgcolor="#339FFF">
+            <th width="35%">Specification</th>
+            <th width="65%">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td width="25%">Target Platform</td>
+            <td width="75%" style="text-align: center">${platform}</td>
+          </tr>
+          <tr>
+            <td width="25%">Test Completion Time</td>
+            <td width="75%" style="text-align: center">${test_info["TestCompletionTime"]}</td>
+          </tr>
+          <tr>
+            <td width="25%">AGESA Head</td>
+            <td width="75%" style="text-align: center">${test_info["AgesaGitHash"]}</td>
+          </tr>
+          <tr>
+            <td width="25%">OpenSIL Head</td>
+            <td width="75%" style="text-align: center">${test_info["OpenSilGitHash"]}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-left: 5%; margin-right: 5%">
+      <br/>
+      <br/>
+      <h3>Component Overview</h3>
+      <br/>
+      <br/>
+    </div>
+    <div style="margin-left: 25%; margin-right: 25%">
+      <table border="1" cellspacing="0" width="100%">
+        <thead>
+          <tr bgcolor="#339FFF">
+            <th width="34%">Name</th>
+            <th width="33%">Total Code Lines</th>
+            <th width="33%">Code Coverage</th>
+          </tr>
+        </thead>
+        <tbody>
+          % for component in components:
+          <%
+          total_num_of_code_lines = 0
+          total_num_of_code_lines_covered = 0
+          overall_coverage_percentage = 0
+          for src_file in component.files:
+            total_num_of_code_lines += int(src_file.code_cnt)
+            if (src_file.coverage != 0):
+              total_num_of_code_lines_covered += (int(src_file.code_cnt) * float(src_file.coverage))/100
+          overall_coverage_percentage = "{:.2f}".format((100 * total_num_of_code_lines_covered)/total_num_of_code_lines)
+          %>
+          <tr>
+            <td>${component.name}</td>
+            <td align="center">${total_num_of_code_lines}</td>
+            <td align="center">${overall_coverage_percentage}%</td>
+          </tr>
+          % endfor
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-left: 5%; margin-right: 5%">
+      <br/>
+      <h3>File Coverage Report</h3>
+    </div>
+    % for component in components:
+    <div style="margin-left: 5%; margin-right: 5%">
+      <br/>
+      <h4>${component.name}</h4>
+      <br/>
+      <table border="1" cellspacing="0" width="100%">
+        <tbody>
+          <tr bgcolor="#339FFF" align="center" border="0">
+            <td width="10%"><b>File Name</b></td>
+            <td width="10%"><b>Code Line Count</b></td>
+            <td width="10%"><b>Documentation Line Count</b></td>
+            <td width="10%"><b>Empty Line Count</b></td>
+            <td width="10%"><b>String Line Count</b></td>
+            <td width="10%"><b>File Coverage (%)</b></td>
+            <td width="10%"><b>Coverage Report</b></td>
+          </tr>
+          % for src_file in component.files:
+          <tr align="center">
+            <td align="left">${src_file.name}.c</td>
+            <td>${src_file.code_cnt}</td>
+            <td>${src_file.doc_cnt}</td>
+            <td>${src_file.empty_cnt}</td>
+            <td>${src_file.string_cnt}</td>
+            <td>${src_file.coverage}</td>
+            <%
+            coverage_file = './{}/{}/index.html'.format(component.name, src_file.name)
+            if not os.path.isfile (os.path.join(configs["OutPath"], coverage_file)):
+              coverage_file = "NA"
+            %>
+            % if coverage_file == "NA":
+            <td align="center">NA</td>
+            % else:
+            <td align="center"><a onclick="openTestDetailsWindow('${coverage_file}')" style="cursor:hand;cursor:pointer" href="JavaScript:void(0)">Link</a></td>
+            % endif
+          </tr>
+          % endfor
+        </tbody>
+      </table>
+    </div>
+    <br/>
+    % endfor
+  </body>
+</html>
