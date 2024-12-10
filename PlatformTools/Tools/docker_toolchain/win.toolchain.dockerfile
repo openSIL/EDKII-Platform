@@ -84,8 +84,7 @@ RUN Invoke-WebRequest -Uri $env:PYTHON_URL -OutFile $env:PYTHON_INSTALLER; \
 RUN python -m pip install --upgrade pip; \
     pip install \
         pyyaml \
-        requests \
-        colorlog
+        requests
 
 # Install NASM
 ENV NASM_VERSION='2.15.05'

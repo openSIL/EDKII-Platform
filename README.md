@@ -43,7 +43,7 @@ The beta release of the EDKII-Platform is intended to integrate with the AMD ope
         - Post cloning tasks for: copy, remove, expand files or folders.
         - Requirements:
           - Python 3.8 or later
-          - External Python packages: PyYAML, requests, colorlog
+          - External Python packages: PyYAML, requests
         
       * Download AMD Bootstrapper Tool:
         - [`bootstrapper.py`](PlatformTools/Tools/bootstrapper/bootstrapper.py)

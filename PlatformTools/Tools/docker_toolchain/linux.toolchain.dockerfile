@@ -52,8 +52,7 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 # Install required packages for Bootstrapper Tool
 RUN pip install \
     pyyaml \
-    requests \
-    colorlog
+    requests
 
 # Install NASM
 ENV NASM_VERSION='2.15.05'
