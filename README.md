@@ -34,97 +34,135 @@ The beta release of the EDKII-Platform is intended to integrate with the AMD ope
   * Windows Cmd promt or Linux bash
   * Create a directory to be used as the workspace directory. "workspace" is
     used in the rest of the document to represent the path.
-  * Clone EDKII Host FW Components
-    * [opensil-uefi-interface](https://github.com/openSIL/opensil-uefi-interface)
-      * Clone to 'workspace\AmdOpenSilPkg' directory.
-      * The opensil-uefi-interface includes the [AMD openSIL - Genoa POC](https://github.com/openSIL/openSIL) repository as a submodule.
-    * AGCL-R: [AGCL-R (AGESA Compatibility Layer - Reduced)](https://github.com/openSIL/AGCL-R)
-    * Platform: [EDKII-Platform Code (this repository)](https://github.com/openSIL/EDKII-Platform)
-      * Clone to 'workspace\Platform' directory.
+  * Set up project source tree:
+    * **Method 1 - AMD Bootstrapper tool**
+      The bootstrapper tool provides a fast, easy to use and well defined project source tree
+      configuration by using a project file in YAML format to specify:
+        - GIT repositories and destination folder.
+        - Third party sources.
+        - Post cloning tasks for: copy, remove, expand files or folders.
+        - Requirements:
+          - Python 3.8 or later
+          - External Python packages: PyYAML, requests, colorlog
+        
+      * Download AMD Bootstrapper Tool:
+        - [`bootstrapper.py`](PlatformTools/Tools/bootstrapper/bootstrapper.py)
+      * Download Genoa POC bootstrapper manifest:
+        - [`genoa_poc.yml`](PlatformTools/Tools/bootstrapper/mfs/genoa_poc.yml)
+      * Bootstrap project sources:
+        - `python bootstrapper.py -f genoa_poc.yml`
+      
+    * **Method 2 - Manual configuration**
+      * Clone EDKII Host FW Components
+        * [opensil-uefi-interface](https://github.com/openSIL/opensil-uefi-interface)
+          * Clone to 'workspace\AmdOpenSilPkg' directory.
+          * The opensil-uefi-interface includes the [AMD openSIL - Genoa POC](https://github.com/openSIL/openSIL) repository as a submodule.
+        * AGCL-R: [AGCL-R (AGESA Compatibility Layer - Reduced)](https://github.com/openSIL/AGCL-R)
+        * Platform: [EDKII-Platform Code (this repository)](https://github.com/openSIL/EDKII-Platform)
+          * Clone to 'workspace\Platform' directory.
 
-  * Acquire EDK2 FW components
-    * [edk2-stable202205](https://github.com/tianocore/edk2/releases/tag/edk2-stable202205)
-      * Clone to 'workspace\edk2' directory.
-    * [edk2-platforms](https://github.com/tianocore/edk2-platforms/commit/b8ffb76b471dae5e24badcd9e04033e8c9439ce3)
-      * Clone to 'workspace\edk2-platforms' directory.
+      * Acquire EDK2 FW components
+        * [edk2-stable202205](https://github.com/tianocore/edk2/releases/tag/edk2-stable202205)
+          * Clone to 'workspace\edk2' directory.
+        * [edk2-platforms](https://github.com/tianocore/edk2-platforms/commit/b8ffb76b471dae5e24badcd9e04033e8c9439ce3)
+          * Clone to 'workspace\edk2-platforms' directory.
 
-  * Acquire BMC GOP EFI Driver.
-    * The Genoa-Onyx platform utilizes the AST 2600 BMC chip.
-      For UEFI video support on the Genoa-Onyx, the GOP EFI driver must be obtained and placed in:
-      `CrbSupportPkg\BmcGopDxe\X64\uefi_2600.efi>`
-      To include the above driver in a build, copy the following file:
-        source: `<workspace>\Platform\AmdCommonPkg\ToCopy\CrbSupportPkg\BmcGopDxe\BmcGopDxe.inf`
-        destination: `<workspace>\CrbSupportPkg\BmcGopDxe\BmcGopDxe.inf`
-  * Copy
-    Windows:
-      Source: Platform\PlatformTools\root_dbuild.cmd
-      Destination: <workspace>\dbuild.cmd
+      * Acquire BMC GOP EFI Driver.
+        * The Genoa-Onyx platform utilizes the AST 2600 BMC chip.
+          For UEFI video support on the Genoa-Onyx, the GOP EFI driver must be obtained and placed in:
+          `CrbSupportPkg\BmcGopDxe\X64\uefi_2600.efi>`
+          To include the above driver in a build, copy the following file:
+            source: `<workspace>\Platform\AmdCommonPkg\ToCopy\CrbSupportPkg\BmcGopDxe\BmcGopDxe.inf`
+            destination: `<workspace>\CrbSupportPkg\BmcGopDxe\BmcGopDxe.inf`
+      * Copy
+        Windows:
+          Source: Platform\PlatformTools\root_dbuild.cmd
+          Destination: <workspace>\dbuild.cmd
 
-    Linux:
-      Source: Platform\PlatformTools\root_dbuild.sh
-      Destination + executable set: <workspace>\dbuild.sh
+        Linux:
+          Source: Platform\PlatformTools\root_dbuild.sh
+          Destination + executable set: <workspace>\dbuild.sh
 
   * **Properly install tools in Required Tools for Windows or Required Tools for Linux**
 ## Required Tools for Windows
 
-  * **Git**
+  * **Docker based Toolchain**
+    The docker based toolchain provides a ready to use build environment with all tools installed.
+    It also includes the Python packages needed by **AMD Bootstrapper tool**
+    * **Windows**
+      * Download the Dockerfile:
+        - [win.toolchain.dockerfile](PlatformTools/Tools/docker_toolchain/win.toolchain.dockerfile/)
+      * Build toolchain image:
+        - `docker build -f .\win.toolchain.dockerfile --tag win.toolchain .`
+      * Launch a container with current path mounted to workspace:
+        - `docker run -v .:c:/workspace/ -it --rm win.toolchain`
+    * **Linux**
+      * Download the Dockerfile:
+        - [linux.toolchain.dockerfile](PlatformTools/Tools/docker_toolchain/linux.toolchain.dockerfile/)
+      * Build toolchain image:
+        - `docker build -f .\linux.toolchain.dockerfile --tag linux.toolchain .`
+      * Launch a container with current path mounted to workspace:
+        - `docker run -v .:/workspace -it --rm linux.toolchain`
 
-    Download URL: https://git-scm.com/
+  * **Manual installation**
+    * **Git**
 
-    Make sure any proxy requirements are set in the git config settings.
+      Download URL: https://git-scm.com/
 
-  * **Microsoft Visual Studio 2019** (tested)
+      Make sure any proxy requirements are set in the git config settings.
 
-    Make sure Visual Studio and the SDK are properly configured for your
-    environment.
+    * **Microsoft Visual Studio 2019** (tested)
 
-    The build will ultimately execute edksetup.bat from edk2 open source which
-    should be able to detect properly installed Visual Studio components and
-    SDKs.
+      Make sure Visual Studio and the SDK are properly configured for your
+      environment.
 
-    For inspiration on Visual Studio and SDK Environment Variables, please
-    refer to:
+      The build will ultimately execute edksetup.bat from edk2 open source which
+      should be able to detect properly installed Visual Studio components and
+      SDKs.
 
-    `edk2/Conf/tools_def.txt`
+      For inspiration on Visual Studio and SDK Environment Variables, please
+      refer to:
 
-    `Platform/PlatformTools/BuildTools-env.cmd`
+      `edk2/Conf/tools_def.txt`
 
-    If you do not have a Visual Studio install which can be located by
-    edksetup.bat, you will need to configure all the proper PREFIX variables
-    required for the build.
+      `Platform/PlatformTools/BuildTools-env.cmd`
 
-    *  **Microsoft SDK**
+      If you do not have a Visual Studio install which can be located by
+      edksetup.bat, you will need to configure all the proper PREFIX variables
+      required for the build.
 
-      Match chosen version of Microsoft Visual Studio.
+      *  **Microsoft SDK**
 
-  * **Python 3.x** (tested 3.7.4 & 3.9)
+        Match chosen version of Microsoft Visual Studio.
 
-    Download URL: https://www.python.org
+    * **Python 3.x** (tested 3.7.4 & 3.9)
 
-    Environment Variable: PYTHON_HOME
+      Download URL: https://www.python.org
 
-    E.g., `PYTHON_HOME = C:\Python39`
+      Environment Variable: PYTHON_HOME
 
-  * **Perl** (tested 5.32.1.1)
+      E.g., `PYTHON_HOME = C:\Python39`
 
-    Download URL: https://strawberryperl.com (tested)
+    * **Perl** (tested 5.32.1.1)
 
-    Strawberry Perl might require separately installing XML::LibXML
-    `cpan install XML::LibXML`
+      Download URL: https://strawberryperl.com (tested)
 
-    Environment Variable: PERL_PATH
-    E.g., `PERL_PATH=C:\Strawberry\perl\bin`
+      Strawberry Perl might require separately installing XML::LibXML
+      `cpan install XML::LibXML`
 
-    Alternatively, ActiveState perl is available if there is trouble
-    installing Strawberry Perl.
+      Environment Variable: PERL_PATH
+      E.g., `PERL_PATH=C:\Strawberry\perl\bin`
 
-  * **NASM** (tested 2.15.05)
+      Alternatively, ActiveState perl is available if there is trouble
+      installing Strawberry Perl.
 
-    Environment Variable: NASM_PREFIX
+    * **NASM** (tested 2.15.05)
 
-  * **ASL compiler** (tested 20200110)
+      Environment Variable: NASM_PREFIX
 
-    Environment Variable: ASL_PREFIX
+    * **ASL compiler** (tested 20200110)
+
+      Environment Variable: ASL_PREFIX
 
 ## Required Tools for Linux
 
@@ -175,7 +213,7 @@ The beta release of the EDKII-Platform is intended to integrate with the AMD ope
     * dbuild.cmd
     * dbuild.sh
 
-## Building Platform BIOS (Windows CMD prompt)
+## Building Platform BIOS (Windows CMD prompt / Docker Windows Toolchain)
 
   * Make sure your build environment is configured as referenced in
     [Required Tools for Windows](#required-tools-for-windows)
@@ -204,7 +242,7 @@ The beta release of the EDKII-Platform is intended to integrate with the AMD ope
 
   * The final BIOS will be placed in <workspace>\\*.FD
 
-## Building Platform BIOS (Linux bash)
+## Building Platform BIOS (Linux bash / Docker Linux Toolchain)
 
   * Make sure your build environment is configured as referenced in
     [Required Tools for Linux](#required-tools-for-linux)

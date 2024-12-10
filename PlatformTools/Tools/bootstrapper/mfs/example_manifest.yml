@@ -1,0 +1,51 @@
+# Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.
+# 
+# SPDX-License-Identifier: MIT
+#
+# Skeleton manifest file for bootstrapper.py
+# Use this file as a guide to create your own manifest for bootstrapping projects.
+#
+# Note: 
+# - Ensure all paths are relative to the project root defined by the 'project' key.
+# - Use the 'tasks' section to specify operations like file copying, deletion, or extraction
+#   after repositories are cloned or artifacts are downloaded.
+# - 'submodules' key controls whether to initialize submodules recursively.
+# - 'commit' allows pinning a repository to a specific commit.
+
+# Project name or identifier
+project: project_name
+
+# List of repositories to clone
+repositories:
+  # Example repository configuration
+  - repo: repository_name                   # Unique name of the repository
+    url: https://example.com/repo.git       # URL of the Git repository
+    branch: main                            # Branch to clone (default: main)
+    commit: <commit_hash>                   # Specific commit to checkout (optional)
+    destination: path/to/clone              # Path where the repository will be cloned
+    submodules: no-recursive                # Submodule handling (values: no-recursive, recursive)
+    tasks:                                  # List of post-clone tasks (optional)
+      - action: copy                        # Action type: copy
+        source: path/to/source              # Source path relative to the repository root
+        destination: path/to/dest           # Destination path
+      - action: delete                      # Action type: delete
+        source: path/to/delete              # Path to delete
+      - action: expand                      # Action type: expand (for archives)
+        source: path/to/archive.zip         # Path to the archive
+        destination: path/to/extract        # Extraction destination
+
+# List of third-party artifacts to download and process
+artifacts:
+  # Example artifact download and population
+  - file: artifact_name                     # Unique name of the artifact
+    url: https://example.com/artifact.zip   # URL of the artifact
+    destination: path/to/save               # Path to save the downloaded artifact
+    tasks:                                  # List of post-download tasks (optional)
+      - action: expand                      # Action type: expand (for archives)
+        source: path/to/archive.zip         # Path to the archive
+        destination: path/to/extract        # Extraction destination
+      - action: copy                        # Action type: copy
+        source: path/to/source              # Source path
+        destination: path/to/dest           # Destination path
+      - action: delete                      # Action type: delete
+        source: path/to/delete              # Path to delete

@@ -1,0 +1,81 @@
+# Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+#
+# GENOA-POC boostraper manifest
+project: genoa_poc
+
+# Repositories
+repositories:
+  # AMD opensil-uefi-interface
+  - repo: OpenSIL_UEFI
+    url: https://github.com/openSIL/opensil-uefi-interface.git
+    branch: genoa_poc
+    destination: AmdOpenSilPkg/opensil-uefi-interface
+    submodules: recursive
+
+  # AMD AGCL-R (AGESA Compatibility Layer - Reduced)
+  - repo: AGCL-R
+    url: https://github.com/openSIL/AGCL-R.git
+    branch: genoa_poc
+    destination: AGCL-R
+
+  # AMD EDKII-Platform
+  - repo: amd-edk2-Platform
+    url: https://github.com/openSIL/EDKII-Platform.git
+    branch: genoa_poc
+    destination: Platform
+    tasks:
+      - action: copy
+        source: Platform/PlatformTools/root_dbuild.cmd
+        destination: dbuild.cmd
+      - action: copy
+        source: Platform/PlatformTools/root_dbuild.sh
+        destination: dbuild.sh
+
+  # AMD Firmwares artifacts
+  - repo: amd-firmwares
+    url: https://github.com/openSIL/amd_firmwares.git
+    branch: genoa_poc
+    destination: amd-firmwares
+    tasks:
+      - action: copy
+        source: amd-firmwares/Firmwares/Genoa/
+        destination: AGCL-R/AgesaModulePkg/Firmwares/Genoa/
+      - action: delete
+        source: amd-firmwares
+
+  # TianoCore EDKII
+  - repo: edk2
+    url: https://github.com/tianocore/edk2.git
+    branch: edk2-stable202205
+    destination: edk2
+    submodules: no-recursive
+
+  # TianoCore EDK2 EDKII Platforms
+  - repo: edk2-platforms
+    url: https://github.com/tianocore/edk2-platforms.git
+    branch: master
+    commit: b8ffb76b471dae5e24badcd9e04033e8c9439ce3
+    destination: edk2-platforms
+    submodules: no-recursive
+
+
+# Third-Party artifacts
+artifacts:
+  # ASPEED Graphics VBIOS/UEFI Package V1.11.03, x64/uefi_2600.efi
+  - file: BMC_GOP_EFI_Driver
+    url: https://www.aspeedtech.com/file/support/v11103_vbios.zip?1732304052719
+    destination: ASPEED/vbios.zip
+    tasks:
+      - action: expand
+        source: ASPEED/vbios.zip
+        destination: ASPEED/
+      - action: copy
+        source: Platform/AmdCommonPkg/ToCopy/CrbSupportPkg
+        destination: CrbSupportPkg
+      - action: copy
+        source: ASPEED/v11103_vbios/UEFI/x64/uefi_2600.efi
+        destination: CrbSupportPkg/BmcGopDxe/X64/
+      - action: delete
+        source: ASPEED
