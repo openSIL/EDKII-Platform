@@ -22,7 +22,6 @@ Requirements:
 - External Python packages:
   - PyYAML (for YAML parsing)
   - requests (for downloading artifacts)
-  - colorlog (for enhanced logging)
 
 Usage:
 ------
@@ -88,7 +87,22 @@ import requests
 import yaml
 import zipfile
 import tarfile
-from colorlog import ColoredFormatter
+
+class ColorFormatter(logging.Formatter):
+    COLORS = {
+        'ERROR':    '\033[91m',     # Red
+        'INFO':     '\033[92m',     # Green
+        'WARNING':  '\033[93m',     # Yellow
+        'DEBUG':    '\033[94m',     # Blue
+        'CRITICAL': '\033[1;91m',   # Light Red
+    }
+    RESET = '\033[0m'               # Restore color
+
+    def format(self, record):
+        log_color = self.COLORS.get(record.levelname, self.RESET)
+        record.levelname = f"{log_color}{record.levelname}{self.RESET}"
+        return super().format(record)
+
 
 class TaskExecutor:
     """Handles post-clone tasks like moving, copying, or deleting files/directories."""
@@ -286,16 +300,7 @@ def setup_logger(debug=False):
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG if debug else logging.INFO)
 
-    formatter = ColoredFormatter(
-        '%(log_color)s%(levelname)-8s%(reset)s %(message)s',
-        log_colors={
-            'DEBUG': 'cyan',
-            'INFO': 'green',
-            'WARNING': 'yellow',
-            'ERROR': 'red',
-            'CRITICAL': 'magenta',
-        }
-    )
+    formatter = ColorFormatter("%(asctime)s - %(levelname)s: %(message)s")
 
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
